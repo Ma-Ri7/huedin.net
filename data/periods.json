@@ -1,0 +1,40 @@
+{
+  "note": "Perioadele provin exclusiv din filtrele existente ale arhivei originale. Descrierile sunt neutre, nu conțin afirmații istorice noi.",
+  "periods": [
+    {
+      "id": "1800-1900",
+      "label": "1800–1900",
+      "range": [1800, 1900],
+      "legacyFilter": "filter-1900",
+      "description": "Perioadă definită de filtrul „1800-1900” din arhiva originală."
+    },
+    {
+      "id": "1900-1930",
+      "label": "1900–1930",
+      "range": [1900, 1930],
+      "legacyFilter": "filter-1930",
+      "description": "Perioadă definită de filtrul „1900-1930” din arhiva originală."
+    },
+    {
+      "id": "1930-1960",
+      "label": "1930–1960",
+      "range": [1930, 1960],
+      "legacyFilter": "filter-1960",
+      "description": "Perioadă definită de filtrul „1930-1960” din arhiva originală."
+    },
+    {
+      "id": "1960-1990",
+      "label": "1960–1990",
+      "range": [1960, 1990],
+      "legacyFilter": "filter-1990",
+      "description": "Perioadă definită de filtrul „1960-1990” din arhiva originală."
+    }
+  ],
+  "eras": [
+    {
+      "id": "interbelic",
+      "label": "perioada interbelică",
+      "note": "Formulare preluată verbatim din arhiva originală. Intervalul de ani nu este afirmat de sursă și nu este folosit ca dată a fotografiei."
+    }
+  ]
+}

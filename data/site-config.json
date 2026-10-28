@@ -1,0 +1,10 @@
+{
+ "note": "Configurație editorială. Modificările aici NU sunt suprascrise de build (spre deosebire de index.html, care este generat).",
+ "hero": {
+  "image": "assets/img/previews/HUEDIN-1907.webp",
+  "photoSlug": null,
+  "title": "",
+  "yearLabel": "",
+  "alt": ""
+ }
+}

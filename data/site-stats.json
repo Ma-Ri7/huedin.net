@@ -1,0 +1,31 @@
+{
+ "generatedFrom": "data/photos.json",
+ "photos": 258,
+ "photoPages": 258,
+ "pages": [
+  "index.html",
+  "arhiva.html",
+  "harta.html",
+  "despre.html",
+  "404.html"
+ ],
+ "periods": {
+  "1800-1900": 12,
+  "1900-1930": 63,
+  "1930-1960": 55,
+  "1960-1990": 128
+ },
+ "exactYear": 178,
+ "approximateOrRange": 60,
+ "eraOnly": 15,
+ "unknownYear": 5,
+ "withLocation": 184,
+ "withoutLocation": 74,
+ "withOwnCoordinates": 219,
+ "withExactCoordinates": 72,
+ "withoutAnyCoordinates": 39,
+ "locationsTotal": 9,
+ "locationsWithCoordinates": 1,
+ "withBlackAndWhiteOriginal": 249,
+ "brokenLegacyReferences": 1
+}

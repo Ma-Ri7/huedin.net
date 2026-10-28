@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Imaginea de header · Huedin.net</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/img/favicon.png">
+<style>
+  :root {
+    --bg: #0c0b0e; --surface: #17161c; --surface-2: #1e1d24; --surface-3: #272630;
+    --line: rgba(255,255,255,.08); --text: #f6f3ed; --muted: #9e9a91;
+    --gold: #c9a227; --gold-soft: #e3c05c; --danger: #e2664a;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.55; }
+  header {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 500;
+  }
+  header h1 { font-family: var(--font-display); font-size: 17px; margin: 0; font-weight: 600; }
+  header .sub { color: var(--muted); font-size: 12px; }
+  .grow { margin-left: auto; }
+  .chip { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 12px; text-decoration: none; cursor: pointer; }
+  .chip:hover { border-color: var(--gold); color: var(--gold-soft); }
+  .chip.ok { color: var(--gold-soft); border-color: rgba(201,162,39,.45); }
+  .chip.warn { color: var(--danger); border-color: rgba(226,102,74,.45); }
+  button, input { font: inherit; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--gold); }
+  button.primary { background: var(--gold); color: #17130a; border-color: transparent; font-weight: 600; }
+  button.primary:disabled { opacity: .5; cursor: default; }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  main { max-width: 1400px; margin: 0 auto; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 18px; align-items: start; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .card h2 { font-family: var(--font-display); font-size: 15px; margin: 0 0 12px; color: var(--gold-soft); font-weight: 600; }
+  #current { width: 100%; max-height: 300px; object-fit: contain; border-radius: 8px; border: 1px solid var(--line); background: #0f0e12; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { margin-bottom: 12px; }
+  .field input { width: 100%; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .tabs button[aria-pressed="true"] { background: rgba(201,162,39,.16); border-color: var(--gold); color: var(--gold-soft); }
+  #options { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+  .opt { position: relative; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #0f0e12; cursor: pointer; padding: 0; }
+  .opt img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+  .opt span { display: block; padding: 5px 7px; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .opt:hover { border-color: var(--gold); }
+  .opt[aria-pressed="true"] { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,162,39,.35); }
+  .opt[aria-pressed="true"]::after {
+    content: "✓"; position: absolute; top: 5px; right: 5px; width: 20px; height: 20px;
+    display: grid; place-items: center; border-radius: 50%; background: var(--gold); color: #17130a;
+    font-size: 12px; font-weight: 700;
+  }
+  .toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--surface-3); border: 1px solid var(--gold); padding: 10px 18px; border-radius: 8px; z-index: 2000; display: none; max-width: 80vw; }
+  .toast.show { display: block; }
+  .status { border-radius: 8px; padding: 12px; border: 1px solid var(--line); background: var(--surface); margin-bottom: 12px; }
+  .status.ok { border-color: rgba(201,162,39,.5); }
+  .status.err { border-color: rgba(226,102,74,.55); }
+  @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Imaginea de header</h1>
+    <div class="sub">Unealtă locală de lucru. Setarea se salvează în data/site-config.json (nu se pierde la rebuild).</div>
+  </div>
+  <div class="grow"></div>
+  <span class="chip" id="apiStatus">se verifică serverul…</span>
+  <a class="chip" href="/tools/add-photo.html">Adaugă fotografie</a>
+  <a class="chip" href="/tools/coords-editor.html">Editor coordonate</a>
+  <a class="chip" href="/index.html" target="_blank" rel="noopener">Vezi pagina</a>
+</header>
+
+<main>
+  <div>
+    <section class="card">
+      <h2>1. Imaginea de header curentă</h2>
+      <img id="current" src="" alt="Imaginea de header curentă">
+      <p class="hint" id="currentPath"></p>
+      <div class="grid2" style="margin-top:12px">
+        <div class="field">
+          <label for="heroTitle">Titlu afișat în legendă (opțional)</label>
+          <input id="heroTitle" type="text" placeholder="ex: Strada Horea">
+        </div>
+        <div class="field">
+          <label for="heroYear">An / perioadă (opțional)</label>
+          <input id="heroYear" type="text" placeholder="ex: 1907">
+        </div>
+      </div>
+      <div class="field">
+        <label for="heroAlt">Text alternativ (accesibilitate)</label>
+        <input id="heroAlt" type="text" placeholder="ex: Strada Horea din Huedin, 1907">
+      </div>
+      <div class="field">
+        <label for="heroImage">Cale imagine (avansat)</label>
+        <input id="heroImage" type="text" placeholder="assets/img/previews/HUEDIN-1907.webp">
+        <p class="hint">Poți scrie orice cale din <code>assets/img/…</code>. Se acceptă și fișiere din
+          <code>assets/img/previews/</code> sau <code>assets/img/portfolio/</code>.</p>
+      </div>
+      <button class="primary" id="saveBtn">Setează ca imagine de header</button>
+      <p class="hint" id="saveHint">Se salvează în <code>data/site-config.json</code> și site-ul se regenerează automat.</p>
+    </section>
+
+    <section class="card">
+      <h2>2. Alege din imagini</h2>
+      <div class="tabs">
+        <button id="tab-photos" aria-pressed="true">Fotografii din arhivă</button>
+        <button id="tab-extras" aria-pressed="false">Alte imagini</button>
+      </div>
+      <input id="search" type="search" placeholder="Caută după titlu, an sau nume de fișier…" style="width:100%; margin-bottom:12px">
+      <div id="options"></div>
+      <p class="hint" id="optionsHint"></p>
+    </section>
+  </div>
+
+  <aside>
+    <div class="status" id="status">
+      <strong>Cum funcționează</strong>
+      <p class="hint">Alegi o imagine → apeși „Setează ca imagine de header" → <code>index.html</code> este
+        regenerat cu noua imagine. Setarea rămâne salvată în <code>data/site-config.json</code>, deci
+        <strong>nu se mai pierde</b> la <code>npm run build</code> sau la salvările din celelalte unelte.</p>
+      <p class="hint">Dacă alegi o imagine mare (peste ~1800px), se generează automat un preview în
+        <code>assets/img/previews/</code> pentru încărcare rapidă.</p>
+    </div>
+    <div class="card">
+      <h2>Configurația salvată</h2>
+      <pre id="configView" style="font-size:11px; color:var(--muted); white-space:pre-wrap; margin:0"></pre>
+    </div>
+  </aside>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="/tools/local-guard.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // unealtă locală: nu funcționează pe domeniul public
+  if (window.huedinLocalTool && !window.huedinLocalTool.isLocal()) {
+    window.huedinLocalTool.block();
+    return;
+  }
+
+  var state = { photos: [], extras: [], tab: 'photos', selected: null, current: null, apiReady: false };
+  var el = function (id) { return document.getElementById(id); };
+  var toastTimer = null;
+
+  function toast(msg) {
+    el('toast').textContent = msg;
+    el('toast').classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el('toast').classList.remove('show'); }, 4000);
+  }
+
+  function esc(v) {
+    return String(v === null || v === undefined ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function setCurrent(path) {
+    el('heroImage').value = path || '';
+    el('current').src = path ? '../' + path : '';
+    el('currentPath').textContent = path || '— nesetat —';
+    state.current = path;
+  }
+
+
+  /* --------------------------- listă de opțiuni --------------------------- */
+  function visibleOptions() {
+    var q = el('search').value.trim().toLowerCase();
+    var list = state.tab === 'photos' ? state.photos : state.extras;
+    if (!q) return list;
+    return list.filter(function (o) {
+      var hay = state.tab === 'photos'
+        ? (o.title + ' ' + o.yearLabel + ' ' + o.id + ' ' + o.slug)
+        : (o.name + ' ' + o.path);
+      return hay.toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  function renderOptions() {
+    var items = visibleOptions();
+    var cap = 120;
+    var shown = items.slice(0, cap);
+    el('options').innerHTML = shown.map(function (o) {
+      var path = state.tab === 'photos' ? o.image : o.path;
+      var label = state.tab === 'photos' ? (o.title + ' · ' + o.yearLabel) : o.name;
+      var active = state.selected === path;
+      return '<button type="button" class="opt" data-path="' + esc(path) + '" data-slug="' + esc(o.slug || '') + '" '
+        + 'aria-pressed="' + active + '" title="' + esc(label) + '">'
+        + '<img src="../' + esc(o.thumb) + '" alt="" loading="lazy">'
+        + '<span>' + esc(label) + '</span></button>';
+    }).join('');
+    el('optionsHint').textContent = items.length + ' imagini'
+      + (items.length > cap ? ' (se afișează primele ' + cap + ' — folosește căutarea)' : '');
+  }
+
+  el('options').addEventListener('click', function (e) {
+    var btn = e.target.closest('.opt');
+    if (!btn) return;
+    state.selected = btn.dataset.path;
+    if (state.tab === 'photos' && btn.dataset.slug) {
+      var photo = state.photos.find(function (p) { return p.slug === btn.dataset.slug; });
+      if (photo) {
+        el('heroTitle').value = photo.title || '';
+        el('heroYear').value = photo.yearLabel || '';
+      }
+    }
+    el('heroImage').value = btn.dataset.path;
+    renderOptions();
+  });
+
+  el('tab-photos').addEventListener('click', function () {
+    state.tab = 'photos';
+    el('tab-photos').setAttribute('aria-pressed', 'true');
+    el('tab-extras').setAttribute('aria-pressed', 'false');
+    renderOptions();
+  });
+  el('tab-extras').addEventListener('click', function () {
+    state.tab = 'extras';
+    el('tab-extras').setAttribute('aria-pressed', 'true');
+    el('tab-photos').setAttribute('aria-pressed', 'false');
+    renderOptions();
+  });
+  el('search').addEventListener('input', renderOptions);
+
+  /* --------------------------- încărcare --------------------------- */
+  function loadCurrent() {
+    return fetch('/api/hero', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (out) {
+        if (!out.ok) throw new Error('fără API');
+        setCurrent(out.hero.image);
+        el('heroTitle').value = out.hero.title || '';
+        el('heroYear').value = out.hero.yearLabel || '';
+        el('heroAlt').value = out.config.alt || '';
+        el('configView').textContent = JSON.stringify(out.config, null, 1);
+        state.apiReady = true;
+        el('apiStatus').className = 'chip ok';
+        el('apiStatus').textContent = 'server OK · salvare directă';
+        el('saveBtn').disabled = false;
+      })
+      .catch(function () {
+        state.apiReady = false;
+        el('apiStatus').className = 'chip warn';
+        el('apiStatus').textContent = 'server fără API — pornește „npm run serve”';
+        el('saveBtn').disabled = true;
+      });
+  }
+
+  function loadOptions() {
+    return fetch('/api/hero/options', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (out) {
+        state.photos = out.photos || [];
+        state.extras = out.extras || [];
+        renderOptions();
+      });
+  }
+
+
+  /* --------------------------- salvare --------------------------- */
+  el('saveBtn').addEventListener('click', function () {
+    var image = el('heroImage').value.trim();
+    if (!image) { toast('Alege o imagine sau scrie o cale.'); return; }
+
+    var btn = el('saveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Se salvează…';
+    el('status').className = 'status';
+    el('status').innerHTML = '<strong>Se procesează…</strong>'
+      + '<p class="hint">Se salvează configurația, eventual se generează un preview '
+      + 'și se regenerează site-ul.</p>';
+
+    fetch('/api/hero', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        image: image,
+        title: el('heroTitle').value,
+        yearLabel: el('heroYear').value,
+        alt: el('heroAlt').value
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (out) {
+        if (!out.ok) throw new Error(out.error || 'eroare');
+        setCurrent(out.hero.image);
+        el('configView').textContent = JSON.stringify({
+          image: out.hero.image,
+          photoSlug: null,
+          title: out.hero.title,
+          yearLabel: out.hero.yearLabel,
+          alt: out.hero.alt
+        }, null, 1);
+        el('status').className = 'status ok';
+        el('status').innerHTML = '<strong>Imagine de header actualizată ✓</strong>'
+          + '<p class="hint">' + esc(out.hero.image) + '</p>'
+          + '<p class="hint">' + (out.rebuild && out.rebuild.ok
+            ? 'Site regenerat (' + (out.rebuild.pages || '?') + ' pagini).'
+            : 'ATENȚIE: regenerarea a eșuat — rulează „npm run build”.') + '</p>'
+          + (out.preview && out.preview.error
+            ? '<p class="hint">Preview: ' + esc(out.preview.error) + '</p>' : '')
+          + '<p><a class="chip" href="/index.html" target="_blank" rel="noopener">'
+          + 'Vezi pagina principală</a></p>';
+        toast('✓ Imaginea de header a fost schimbată.');
+      })
+      .catch(function (err) {
+        el('status').className = 'status err';
+        el('status').innerHTML = '<strong>Nu am putut salva</strong>'
+          + '<p class="hint">' + esc(err.message) + '</p>';
+        toast('Eroare: ' + err.message);
+      })
+      .finally(function () {
+        btn.disabled = !state.apiReady;
+        btn.textContent = 'Setează ca imagine de header';
+      });
+  });
+
+  Promise.all([loadCurrent(), loadOptions()]).catch(function (err) {
+    toast('Eroare la încărcare: ' + err.message);
+  });
+})();
+</script>
+</body>
+</html>
+

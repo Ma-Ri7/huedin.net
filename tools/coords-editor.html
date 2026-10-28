@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editor coordonate · Huedin.net</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="stylesheet" href="../assets/vendor/leaflet/leaflet.css">
+<style>
+  :root {
+    --bg: #0a0a0c; --surface: #14141a; --surface-2: #1b1b22; --surface-3: #232330;
+    --line: rgba(255,255,255,.09); --text: #f4f2ee; --muted: #9c9a94;
+    --gold: #c9a227; --gold-soft: #e3c05c; --danger: #e2664a;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text); font-family: var(--font-body);
+    font-size: 14px; display: grid; grid-template-rows: auto 1fr;
+  }
+  header {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 8px 14px; background: var(--surface); border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+  header .sub { color: var(--muted); font-size: 12px; }
+  header label.sub { display: inline-flex; align-items: center; gap: 6px; }
+  #defaultSource { flex: 1 1 340px; min-width: 200px; }
+  .grow { margin-left: auto; }
+  button, select, input[type=text] {
+    font: inherit; color: var(--text); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; cursor: pointer;
+  }
+  button:hover, select:hover { border-color: var(--gold); }
+  button.primary { background: var(--gold); color: #17130a; border-color: transparent; font-weight: 600; }
+  button.danger { color: var(--danger); }
+  input[type=text] { cursor: text; }
+  .layout { display: grid; grid-template-columns: 340px 1fr; min-height: 0; }
+  aside {
+    background: var(--surface); border-right: 1px solid var(--line);
+    display: grid; grid-template-rows: auto auto auto auto 1fr; min-height: 0;
+  }
+  .panel { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .progress { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .progress strong { color: var(--gold-soft); }
+  .bar { height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--gold); width: 0; transition: width .3s; }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 0; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .chip { padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; font-size: 12px; }
+  .chip[aria-pressed="true"] { background: rgba(201,162,39,.16); border-color: var(--gold); color: var(--gold-soft); }
+  #list { overflow-y: auto; margin: 0; padding: 0; list-style: none; }
+  #list li { display: flex; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  #list li:hover { background: var(--surface-2); }
+  #list li[aria-selected="true"] { background: rgba(201,162,39,.14); box-shadow: inset 3px 0 0 var(--gold); }
+  #list img { width: 54px; height: 42px; object-fit: cover; border-radius: 4px; flex: none; background: #0d0d10; }
+  #list .meta { min-width: 0; }
+  #list .t { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #list .y { color: var(--muted); font-size: 11px; }
+  .flag { font-size: 10px; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .flag.ok { color: var(--gold-soft); border-color: rgba(201,162,39,.4); }
+  #map { height: 100%; background: #0d0d10; }
+  .hint {
+    padding: 8px 12px; font-size: 12px; color: var(--muted);
+    background: var(--surface-2); border-top: 1px solid var(--line);
+  }
+  .hint strong { color: var(--gold-soft); }
+  .steps ol { margin: 8px 0 0; padding-left: 18px; color: var(--text); font-size: 12px; line-height: 1.7; }
+  .steps li { margin-bottom: 3px; }
+  .steps code {
+    display: inline-block; background: var(--surface-3); border: 1px solid var(--line);
+    border-radius: 4px; padding: 1px 6px; font-size: 11px; color: var(--gold-soft);
+    word-break: break-all;
+  }
+  .steps .muted { color: var(--muted); }
+  #catalogStatus { font-size: 11px; }
+  .ok-badge { color: var(--gold-soft); }
+  .warn-badge { color: var(--danger); }
+  .toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: var(--surface-3); border: 1px solid var(--gold); color: var(--text);
+    padding: 10px 18px; border-radius: 8px; z-index: 2000; display: none;
+  }
+  .toast.show { display: block; }
+  .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--surface-2); color: var(--text); }
+  .leaflet-container a.leaflet-popup-close-button { color: var(--muted); }
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; grid-template-rows: 45vh 1fr; }
+    aside { border-right: 0; border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Editor coordonate — Huedinul Istoric</h1>
+    <div class="sub">Unealtă locală de lucru. Nu face parte din site-ul publicat.</div>
+  </div>
+  <div class="grow"></div>
+  <label class="sub">Sursă implicită
+    <input type="text" id="defaultSource" size="30" value="Poziționare manuală pe harta OpenStreetMap">
+  </label>
+  <select id="defaultCertainty" aria-label="Precizie implicită">
+    <option value="approximate">aproximativă</option>
+    <option value="exact">exactă</option>
+  </select>
+  <label class="sub" style="cursor:pointer;white-space:nowrap">
+    <input type="checkbox" id="autoSave" checked> Salvează automat
+  </label>
+  <button id="saveBtn" class="primary" disabled title="Scrie coordonatele direct în data/photos.json">Salvează în catalog</button>
+  <button id="exportBtn">Exportă JSON</button>
+  <a class="chip" href="/tools/add-photo.html" style="text-decoration:none">Adaugă fotografie</a>
+  <a class="chip" href="/tools/set-hero.html" style="text-decoration:none">Imagine header</a>
+  <label class="sub" style="cursor:pointer">Importă
+    <input type="file" id="importFile" accept=".json,.csv" hidden>
+  </label>
+  <button id="importBtn">Importă JSON</button>
+  <button id="clearAllBtn" class="danger">Șterge nesalvatele</button>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="panel">
+      <div class="progress" id="progress"></div>
+      <div class="bar"><span id="bar"></span></div>
+      <div class="progress" id="catalogStatus" style="margin:8px 0 0"></div>
+    </div>
+    <div class="panel steps" id="stepsPanel">
+      <div id="stepsApi" hidden>
+        <strong>Cum ajung coordonatele pe hartă:</strong>
+        <ol>
+          <li>Selectează fotografia din listă.</li>
+          <li>Click pe hartă în locul potrivit.</li>
+          <li>Apasă <b>Salvează în catalog</b> (sus).</li>
+          <li>Deschide <a href="/harta.html" target="_blank" rel="noopener">harta.html</a> — pin-urile sunt acolo.</li>
+        </ol>
+        <p class="muted" style="margin:6px 0 0;font-size:11px">
+          Butonul scrie direct în <code>data/photos.json</code> și regenerează automat
+          paginile. Nu mai e nevoie de export/import sau de alte comenzi.
+        </p>
+      </div>
+      <div id="stepsManual">
+        <strong>Salvare manuală (serverul actual nu suportă scrierea directă):</strong>
+        <ol>
+          <li>Selectează fotografia, click pe hartă.</li>
+          <li>Apasă <b>Exportă JSON</b>.</li>
+          <li>Rulează în terminal:<br>
+            <code id="importCmd">node tools/set-coords.js --import ~/Downloads/coordinates.json</code>
+            <button class="chip" id="copyCmd" type="button">copiază comanda</button>
+          </li>
+          <li>Rulează <code>npm run build</code> și reîncarcă <code>harta.html</code>.</li>
+        </ol>
+        <p class="muted" style="margin:8px 0 0;font-size:11px">
+          <strong style="color:var(--gold-soft)">Vrei un singur click?</strong>
+          Oprește serverul curent și pornește <code>npm run serve</code>, apoi reîncarcă
+          această pagină: va apărea butonul „Salvează în catalog".
+        </p>
+      </div>
+    </div>
+    <div class="panel">
+      <input type="text" id="search" placeholder="Caută titlu sau cod (ex. p012, piața)…" style="width:100%">
+      <div class="chips">
+        <button class="chip" id="f-all" aria-pressed="true">Toate</button>
+        <button class="chip" id="f-missing" aria-pressed="false">Fără coordonate</button>
+        <button class="chip" id="f-done" aria-pressed="false">Cu coordonate</button>
+      </div>
+    </div>
+    <div class="hint" id="selection">
+      Selectați o fotografie din listă, apoi <strong>faceți click pe hartă</strong> pentru a-i fixa poziția.
+    </div>
+    <ul id="list"></ul>
+  </aside>
+  <div id="map"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="/tools/local-guard.js"></script>
+<script src="../assets/vendor/leaflet/leaflet.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // unealtă locală: nu funcționează pe domeniul public
+  if (window.huedinLocalTool && !window.huedinLocalTool.isLocal()) {
+    window.huedinLocalTool.block();
+    return;
+  }
+
+  var STORE_KEY = 'huedin-coords-editor-v1';
+  var HUE = { lat: 46.86326641627756, lng: 23.016986552462303, zoom: 14 };
+
+  var state = { photos: [], variants: {}, coords: {}, selected: null, filter: 'all', query: '', catalogIds: [], apiAvailable: false };
+
+  var el = {
+    list: document.getElementById('list'),
+    map: document.getElementById('map'),
+    progress: document.getElementById('progress'),
+    bar: document.getElementById('bar'),
+    search: document.getElementById('search'),
+    selection: document.getElementById('selection'),
+    toast: document.getElementById('toast'),
+    defaultSource: document.getElementById('defaultSource'),
+    defaultCertainty: document.getElementById('defaultCertainty'),
+    saveBtn: document.getElementById('saveBtn')
+  };
+
+  function escapeHtml(v) {
+    return String(v === null || v === undefined ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function toast(msg) {
+    el.toast.textContent = msg;
+    el.toast.classList.add('show');
+    setTimeout(function () { el.toast.classList.remove('show'); }, 2200);
+  }
+
+  function hasCoords(id) {
+    var c = state.coords[id];
+    return c && typeof c.latitude === 'number' && typeof c.longitude === 'number';
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      var stored = JSON.parse(raw) || {};
+      // se completează peste coordonatele din catalog (cele locale au prioritate)
+      Object.keys(stored).forEach(function (id) { state.coords[id] = stored[id]; });
+    } catch (e) { /* localStorage indisponibil sau date corupte: ignorăm */ }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state.coords));
+    } catch (e) {
+      toast('Nu am putut salva local (localStorage indisponibil).');
+    }
+  }
+
+  /* -------------------- salvare directă în catalog -------------------- */
+  /** Verifică dacă serverul local oferă endpoint-ul de salvare (tools/serve.js). */
+  async function detectApi() {
+    try {
+      const res = await fetch('/api/status', { cache: 'no-store' });
+      if (!res.ok) throw new Error('fără API');
+      const out = await res.json();
+      if (!out || !out.ok) throw new Error('fără API');
+      state.apiAvailable = true;
+      el.saveBtn.disabled = false;
+      document.getElementById('stepsApi').hidden = false;
+      document.getElementById('stepsManual').hidden = true;
+      return true;
+    } catch (e) {
+      state.apiAvailable = false;
+      el.saveBtn.disabled = true;
+      document.getElementById('stepsApi').hidden = true;
+      document.getElementById('stepsManual').hidden = false;
+      return false;
+    }
+  }
+
+  /** Scrie coordonatele direct în data/photos.json, printr-un singur click. */
+  async function saveToCatalog(silent) {
+    var records = Object.keys(state.coords).map(function (k) { return state.coords[k]; });
+    if (!records.length) { if (!silent) toast('Nu există coordonate de salvat.'); return; }
+
+    if (!silent) {
+      el.saveBtn.disabled = true;
+      el.saveBtn.textContent = 'Se salvează…';
+    }
+    try {
+      var res = await fetch('/api/coords', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ records: records })
+      });
+      var out = await res.json();
+      if (!out.ok) throw new Error(out.error || 'eroare necunoscută');
+
+      // tot ce era salvat local este acum în catalog
+      state.catalogIds = Object.keys(state.coords);
+      updateProgress();
+
+      if (out.problems && out.problems.length) {
+        toast(out.updated + ' salvate, ' + out.problems.length + ' probleme (vezi consola)');
+        console.warn('Probleme la salvare:', out.problems);
+      } else if (silent) {
+        flashSaved();
+      } else {
+        toast('✓ ' + out.updated + ' coordonate salvate'
+          + (out.rebuild && out.rebuild.ok ? ' · paginile au fost regenerate' : ''));
+      }
+      if (!silent) {
+        el.saveBtn.textContent = 'Salvat ✓';
+        setTimeout(function () { el.saveBtn.textContent = 'Salvează în catalog'; }, 2500);
+      }
+      console.log('Catalog actualizat:', out.summary);
+      return out;
+    } catch (e) {
+      toast('Nu am putut salva: ' + e.message);
+      if (!silent) el.saveBtn.textContent = 'Salvează în catalog';
+    } finally {
+      if (!silent) el.saveBtn.disabled = !state.apiAvailable;
+    }
+  }
+
+  /** Salvare automată (la fiecare click pe hartă), dacă e activată și API-ul există. */
+  var autoSaveTimer = null;
+  function scheduleAutoSave() {
+    if (!state.apiAvailable) return;
+    var box = document.getElementById('autoSave');
+    if (!box || !box.checked) return;
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(function () { saveToCatalog(true); }, 500);
+  }
+
+  function flashSaved() {
+    var el2 = document.getElementById('catalogStatus');
+    if (!el2) return;
+    var mark = document.createElement('span');
+    mark.className = 'ok-badge';
+    mark.textContent = ' · salvat automat ✓';
+    el2.appendChild(mark);
+    setTimeout(function () { if (mark.parentNode) mark.parentNode.removeChild(mark); }, 2500);
+  }
+
+
+  /* ------------------------------- hartă ------------------------------- */
+  var map = L.map('map', { center: [HUE.lat, HUE.lng], zoom: HUE.zoom, scrollWheelZoom: true });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  var savedLayer = L.layerGroup().addTo(map);
+  var selectedMarker = null;
+
+  function pinIcon(record) {
+    var exact = record && record.certainty === 'exact';
+    return L.divIcon({
+      className: 'pin',
+      html: '<span style="display:block;width:14px;height:14px;border-radius:50%;'
+        + 'background:' + (exact ? '#c9a227' : 'rgba(10,10,12,.85)') + ';'
+        + 'border:' + (exact ? '2px solid #14140f' : '3px solid #c9a227') + '"></span>',
+      iconSize: [14, 14], iconAnchor: [7, 7]
+    });
+  }
+
+  function redrawSaved() {
+    savedLayer.clearLayers();
+    Object.keys(state.coords).forEach(function (id) {
+      var c = state.coords[id];
+      if (typeof c.latitude !== 'number') return;
+      var m = L.marker([c.latitude, c.longitude], { icon: pinIcon(c), title: id });
+      m.bindTooltip(id + (state.photoById && state.photoById[id] ? ' · ' + state.photoById[id].title : ''));
+      m.on('click', function (e) {
+        L.DomEvent.stopPropagation(e);
+        select(id, true);
+      });
+      savedLayer.addLayer(m);
+    });
+  }
+
+  function showSelectedMarker() {
+    if (selectedMarker) { map.removeLayer(selectedMarker); selectedMarker = null; }
+    if (!state.selected) return;
+    var c = state.coords[state.selected];
+    if (!c || typeof c.latitude !== 'number') return;
+    selectedMarker = L.marker([c.latitude, c.longitude], {
+      draggable: true,
+      icon: L.divIcon({
+        className: 'pin-selected',
+        html: '<span style="display:block;width:22px;height:22px;border-radius:50%;'
+          + 'background:#e3c05c;border:3px solid #14140f;box-shadow:0 0 0 6px rgba(227,192,92,.30)"></span>',
+        iconSize: [22, 22], iconAnchor: [11, 11]
+      })
+    }).addTo(map);
+    selectedMarker.on('dragend', function (ev) {
+      var ll = ev.target.getLatLng();
+      setCoords(state.selected, ll.lat, ll.lng);
+    });
+  }
+
+  function setCoords(id, lat, lng) {
+    var photo = state.photoById[id];
+    var source = (el.defaultSource.value || '').trim() || 'Sursă nespecificată';
+    var certainty = el.defaultCertainty.value || 'approximate';
+    state.coords[id] = {
+      id: id,
+      slug: photo ? photo.slug : '',
+      latitude: Math.round(lat * 1e6) / 1e6,
+      longitude: Math.round(lng * 1e6) / 1e6,
+      certainty: certainty,
+      source: source
+    };
+    save();
+    scheduleAutoSave();
+    redrawSaved();
+    showSelectedMarker();
+    renderList();
+    updateProgress();
+    renderSelection();
+  }
+
+  map.on('click', function (e) {
+    if (!state.selected) { toast('Selectați mai întâi o fotografie din listă.'); return; }
+    setCoords(state.selected, e.latlng.lat, e.latlng.lng);
+    toast('Coordonate salvate pentru ' + state.selected);
+  });
+
+
+  /* ------------------------------- listă ------------------------------- */
+  function visiblePhotos() {
+    var q = el.search.value.trim().toLowerCase();
+    return state.photos.filter(function (p) {
+      if (state.filter === 'missing' && hasCoords(p.id)) return false;
+      if (state.filter === 'done' && !hasCoords(p.id)) return false;
+      if (!q) return true;
+      return (p.id + ' ' + p.title + ' ' + p.yearLabel + ' ' + (p.slug || '')).toLowerCase().indexOf(q) !== -1;
+    });
+  }
+
+  function renderList() {
+    var items = visiblePhotos();
+    el.list.innerHTML = items.map(function (p) {
+      var v = state.variants[p.id];
+      var thumb = v && v.thumb ? '../' + v.thumb.path : '../' + p.image;
+      var done = hasCoords(p.id);
+      return '<li data-id="' + escapeHtml(p.id) + '" aria-selected="' + (state.selected === p.id) + '">'
+        + '<img src="' + escapeHtml(thumb) + '" alt="" loading="lazy">'
+        + '<div class="meta"><span class="t">' + escapeHtml(p.title) + '</span>'
+        + '<span class="y">' + escapeHtml(p.id + ' · ' + p.yearLabel) + '</span></div>'
+        + '<span class="flag' + (done ? ' ok' : '') + '">' + (done ? '✓' : '—') + '</span>'
+        + '</li>';
+    }).join('');
+  }
+
+  function select(id, fromMap) {
+    state.selected = id;
+    var photo = state.photoById[id];
+    renderList();
+    renderSelection();
+    showSelectedMarker();
+    var c = state.coords[id];
+    if (c && typeof c.latitude === 'number') {
+      map.setView([c.latitude, c.longitude], Math.max(map.getZoom(), 16));
+    } else if (photo && photo.locationId) {
+      var loc = state.locationById[photo.locationId];
+      if (loc && typeof loc.latitude === 'number') map.setView([loc.latitude, loc.longitude], 15);
+    }
+    if (!fromMap) {
+      var row = el.list.querySelector('li[data-id="' + id + '"]');
+      if (row) row.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function renderSelection() {
+    var p = state.selected ? state.photoById[state.selected] : null;
+    if (!p) {
+      el.selection.innerHTML = 'Selectați o fotografie din listă, apoi '
+        + '<strong>faceți click pe hartă</strong> pentru a-i fixa poziția.';
+      return;
+    }
+    var c = state.coords[p.id];
+    var loc = p.locationId ? state.locationById[p.locationId] : null;
+    el.selection.innerHTML = '<strong>' + escapeHtml(p.title) + '</strong> ('
+      + escapeHtml(p.id) + ', ' + escapeHtml(p.yearLabel) + ')'
+      + (loc ? ' · localitate: ' + escapeHtml(loc.name) : '')
+      + '<br>' + (c && typeof c.latitude === 'number'
+        ? 'Coordonate: ' + c.latitude.toFixed(5) + ', ' + c.longitude.toFixed(5)
+          + ' (' + escapeHtml(c.certainty) + ')'
+          + ' <button id="clearOne" class="chip" style="margin-left:6px">șterge</button>'
+        : 'Fără coordonate — faceți click pe hartă.')
+      + ' <button id="nextMissing" class="chip" style="margin-left:6px">următoarea fără coordonate</button>';
+    var clearOne = document.getElementById('clearOne');
+    if (clearOne) {
+      clearOne.addEventListener('click', function () {
+        delete state.coords[p.id];
+        save(); scheduleAutoSave();
+        redrawSaved(); showSelectedMarker(); renderList(); updateProgress(); renderSelection();
+      });
+    }
+    var nextMissing = document.getElementById('nextMissing');
+    if (nextMissing) {
+      nextMissing.addEventListener('click', function () {
+        var missing = state.photos.filter(function (x) { return !hasCoords(x.id); });
+        if (!missing.length) { toast('Toate fotografiile au coordonate.'); return; }
+        select(missing[0].id);
+      });
+    }
+  }
+
+  function updateProgress() {
+    var done = state.photos.filter(function (p) { return hasCoords(p.id); }).length;
+    var pct = state.photos.length ? Math.round((done / state.photos.length) * 100) : 0;
+    el.progress.innerHTML = '<strong>' + done + '</strong> / ' + state.photos.length
+      + ' fotografii au coordonate (' + pct + '%)';
+    el.bar.style.width = pct + '%';
+    updateCatalogStatus();
+  }
+
+  /** Arată clar ce este deja în catalog și ce mai trebuie exportat + importat. */
+  function updateCatalogStatus() {
+    var el2 = document.getElementById('catalogStatus');
+    if (!el2) return;
+    var inCatalog = state.catalogIds.length;
+    var localOnly = 0;
+    Object.keys(state.coords).forEach(function (id) {
+      if (state.catalogIds.indexOf(id) === -1) localOnly++;
+    });
+    var pending = localOnly;
+    el2.innerHTML = 'În catalog (data/photos.json): <span class="ok-badge">' + inCatalog + '</span>'
+      + ' · noi, doar în acest browser: <span class="' + (pending ? 'warn-badge' : 'ok-badge') + '">'
+      + pending + '</span>'
+      + (pending ? ' — exportați și importați pentru a le publica.' : '');
+  }
+
+
+  /* ------------------------------- evenimente ------------------------------- */
+  el.list.addEventListener('click', function (e) {
+    var li = e.target.closest('li[data-id]');
+    if (li) select(li.dataset.id);
+  });
+
+  el.search.addEventListener('input', renderList);
+
+  [['f-all', 'all'], ['f-missing', 'missing'], ['f-done', 'done']].forEach(function (pair) {
+    var btn = document.getElementById(pair[0]);
+    btn.addEventListener('click', function () {
+      state.filter = pair[1];
+      ['f-all', 'f-missing', 'f-done'].forEach(function (id) {
+        document.getElementById(id).setAttribute('aria-pressed', String(id === pair[0]));
+      });
+      renderList();
+    });
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', saveToCatalog);
+
+  document.getElementById('exportBtn').addEventListener('click', function () {
+    var out = Object.keys(state.coords).map(function (k) { return state.coords[k]; });
+    var blob = new Blob([JSON.stringify(out, null, 1)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'coordinates.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('Exportate ' + out.length + ' coordonate. Importați-le cu comanda de mai jos.');
+  });
+
+  document.getElementById('copyCmd').addEventListener('click', function () {
+    var cmd = document.getElementById('importCmd').textContent.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cmd).then(function () {
+        toast('Comanda a fost copiată.');
+      }, function () {
+        toast('Copiați manual: ' + cmd);
+      });
+    } else {
+      toast('Copiați manual: ' + cmd);
+    }
+  });
+
+  document.getElementById('importBtn').addEventListener('click', function () {
+    document.getElementById('importFile').click();
+  });
+
+  document.getElementById('importFile').addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var parsed = JSON.parse(reader.result);
+        var list = Array.isArray(parsed) ? parsed : Object.keys(parsed).map(function (k) {
+          return Object.assign({ id: k }, parsed[k]);
+        });
+        var n = 0;
+        list.forEach(function (rec) {
+          if (!rec || !rec.id || !state.photoById[rec.id]) return;
+          if (typeof rec.latitude !== 'number') return;
+          state.coords[rec.id] = {
+            id: rec.id,
+            slug: state.photoById[rec.id].slug,
+            latitude: rec.latitude,
+            longitude: rec.longitude,
+            certainty: rec.certainty || 'approximate',
+            source: rec.source || 'Sursă nespecificată'
+          };
+          n++;
+        });
+        save(); redrawSaved(); renderList(); updateProgress(); renderSelection();
+        toast('Importate ' + n + ' coordonate.');
+      } catch (err) {
+        toast('Fișier invalid: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('clearAllBtn').addEventListener('click', function () {
+    if (!confirm('Ștergeți coordonatele nesalvate din acest browser?\n'
+      + '(Cele deja salvate în data/photos.json rămân.)')) return;
+    state.coords = {};
+    save(); redrawSaved(); showSelectedMarker(); renderList(); updateProgress(); renderSelection();
+    toast('Coordonatele locale au fost șterse.');
+  });
+
+  /* ------------------------------- pornire ------------------------------- */
+  function boot(photos, locations, media) {
+    state.photos = photos;
+    state.variants = media.variants || {};
+    state.photoById = {};
+    state.catalogIds = [];
+    photos.forEach(function (p) {
+      state.photoById[p.id] = p;
+      // preluăm coordonatele deja existente în catalog
+      if (typeof p.latitude === 'number' && typeof p.longitude === 'number') {
+        state.catalogIds.push(p.id);
+        state.coords[p.id] = {
+          id: p.id, slug: p.slug,
+          latitude: p.latitude, longitude: p.longitude,
+          certainty: p.coordinateCertainty || 'approximate',
+          source: p.coordinateSource || 'Sursă nespecificată'
+        };
+      }
+    });
+    state.locationById = {};
+    locations.forEach(function (l) { state.locationById[l.id] = l; });
+
+    load(); // coordonatele nesalvate din sesiunea anterioară au prioritate
+    redrawSaved();
+    renderList();
+    updateProgress();
+    renderSelection();
+
+    detectApi().then(function () {
+      // Dacă există coordonate locale nesalvate și salvarea automată e activă,
+      // le scriem imediat în catalog (ca să nu rămână doar în browser).
+      var box = document.getElementById('autoSave');
+      var localOnly = Object.keys(state.coords).filter(function (id) {
+        return state.catalogIds.indexOf(id) === -1;
+      }).length;
+      if (state.apiAvailable && box && box.checked && localOnly > 0) {
+        toast('Salvez automat ' + localOnly + ' coordonate locale în catalog…');
+        saveToCatalog(true);
+      }
+    });
+
+    if (locations.length) {
+      var withCoords = locations.filter(function (l) { return typeof l.latitude === 'number'; });
+      if (withCoords.length) map.setView([withCoords[0].latitude, withCoords[0].longitude], 14);
+    }
+  }
+
+  Promise.all([
+    fetch('../data/photos.json').then(function (r) { return r.json(); }),
+    fetch('../data/locations.json').then(function (r) { return r.json(); }),
+    fetch('../data/media.json').then(function (r) { return r.json(); })
+  ]).then(function (res) {
+    boot(res[0].photos, res[1].locations, res[2]);
+  }).catch(function (err) {
+    document.body.innerHTML = '<div style="padding:24px;color:#f4f2ee;font-family:sans-serif">'
+      + '<h1>Nu am putut încărca datele</h1>'
+      + '<p>Deschideți editorul printr-un server local:</p>'
+      + '<pre>npm run serve</pre>'
+      + '<p>apoi <a style="color:#e3c05c" href="http://localhost:8080/tools/coords-editor.html">'
+      + 'http://localhost:8080/tools/coords-editor.html</a></p>'
+      + '<p style="color:#9c9a94">' + err.message + '</p></div>';
+  });
+})();
+</script>
+</body>
+</html>
+

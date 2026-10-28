@@ -1,0 +1,31 @@
+{
+  "name": "huedin-net",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Huedinul Istoric - arhiva fotografica statica (HTML/CSS/JS, fara baza de date si fara backend)",
+  "type": "module",
+  "scripts": {
+    "extract": "node tools/extract.js",
+    "thumbs": "node tools/thumbs.js",
+    "build": "node tools/build.js",
+    "validate": "node tools/validate.js",
+    "reconcile": "node tools/reconcile.js",
+    "test": "node tools/test.js",
+    "browser": "node tools/browser-check.js",
+    "add-photo": "node tools/add-photo.js",
+    "coords": "node tools/set-coords.js --stats",
+    "coords:export": "node tools/set-coords.js --export",
+    "coords:import": "node tools/set-coords.js --import",
+    "hero": "node tools/set-hero.js --show",
+    "pipeline": "npm run extract && npm run thumbs && npm run build && npm run validate && npm run reconcile && npm run test",
+    "verify": "npm run pipeline && npm run browser",
+    "serve": "node tools/serve.js",
+    "serve:static": "python3 -m http.server 8080"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.16.0"
+  }
+}

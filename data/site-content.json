@@ -1,0 +1,104 @@
+{
+ "siteName": "Huedin.net",
+ "siteUrl": "http://huedin.net",
+ "taglineHtml": "<i> „În ochii <span>timpului </span>, suntem doar instantanee într-un album infinit.” </i>",
+ "tagline": "„În ochii timpului , suntem doar instantanee într-un album infinit.”",
+ "title": "Huedin.net",
+ "metaDescription": "Huedin si alte zone adiacente într-o colecție do poze vechi, colorizate  ",
+ "metaKeywords": "Huedin",
+ "socials": [
+  {
+   "url": "https://twitter.com/huedinul",
+   "network": "twitter",
+   "icon": "twitter"
+  },
+  {
+   "url": "https://www.facebook.com/Huedinul.istoric",
+   "network": "facebook",
+   "icon": "facebook"
+  },
+  {
+   "url": "https://www.instagram.com/huedinul_istoric/",
+   "network": "instagram",
+   "icon": "instagram"
+  }
+ ],
+ "aboutHeading": "Huedinul istoric",
+ "aboutParagraphs": [
+  "Se spune că cele mai tari descoperiri se fac din întâmplare. Exact așa am pățit și eu… într-o seară în care probabil trebuia să fac orice altceva mai productiv, am dat peste prima fotografie veche a orașului Huedin.",
+  "Și gata… s-a terminat. Am intrat într-o gaură neagră a internetului din care am ieșit după ore întregi, cu ochii obosiți, sufletul plin de nostalgie și un folder nou numit foarte modest: „Poze Huedin”.",
+  "Nu pot explica exact senzația pe care am avut-o când am văzut pentru prima dată Huedinul de altădată. A fost un amestec ciudat de fascinație, emoție și acel sentiment că privești direct într-o bucățică de timp înghețată.",
+  "Așa s-a născut proiectul personal „Huedinul Istoric” — o încercare de a readuce aceste imagini la viață prin colorizare. Pentru că, sincer… viața e prea frumoasă ca să rămână doar în alb și negru. 😊",
+  "Desigur, colorizarea nu este perfectă. Uneori AI-ul decide că un zid trebuie să fie mov sau că cerul arată mai bine ca după apocalipsă. Dar tocmai asta face procesul interesant. De aceea, orice sugestie, idee sau critică constructivă este mai mult decât binevenită!"
+ ],
+ "disclaimerTitle": "Disclaimer :",
+ "disclaimerItems": [
+  "Documentarea s-a realizat în principal prin cercetări online, cu sprijinul dlui profesor Horea-Dorin Matiș, căruia îi mulțumesc pentru informațiile oferite;",
+  "Pozele originale sunt alb-negru, în format digital;",
+  "Sursele imaginilor includ rețele sociale (Facebook, Instagram, Twitter etc.), arhive digitale online și alte colecții publice;",
+  "Colorizarea a fost realizată atât manual (Photoshop), cât și cu ajutorul unor programe bazate pe inteligență artificială."
+ ],
+ "counts": [
+  {
+   "value": "9346",
+   "label": "Populația în 2011"
+  },
+  {
+   "value": "61.24",
+   "label": "Suprafața (km2)"
+  },
+  {
+   "value": "556",
+   "label": "Altitudine medie față de nivelul mării (m)"
+  },
+  {
+   "value": "405400",
+   "label": "Cod Poștal"
+  }
+ ],
+ "usefulLinks": [
+  {
+   "url": "https://primariahuedin.ro/",
+   "title": "Primăria Huedin",
+   "description": "Site-ul Primăriei Huedin"
+  },
+  {
+   "url": "https://ogoga.ro/",
+   "title": "Liceul Octavian Goga",
+   "description": "Site-ul Liceului Octavian Goga"
+  },
+  {
+   "url": "http://liceulvladeasahuedin.ro/",
+   "title": "Liceul Vlădeasa",
+   "description": "Site-ul Liceului Vlădeasa"
+  },
+  {
+   "url": "http://www.spitalulhuedin.ro/",
+   "title": "Spitalul Orășenesc",
+   "description": "Site-ul Spitalului Orășenesc"
+  }
+ ],
+ "infoBoxes": [
+  {
+   "label": "Adresă",
+   "value": "Piața Republicii"
+  },
+  {
+   "label": "Conturi Sociale",
+   "value": ""
+  },
+  {
+   "label": "Email",
+   "value": "admin@huedin.net"
+  },
+  {
+   "label": "Telefon",
+   "value": "07XXXXXXXX"
+  }
+ ],
+ "formAction": "https://formcarry.com/s/Fefj0T9JC",
+ "email": "admin@huedin.net",
+ "phone": "07XXXXXXXX",
+ "phoneDisplay": "07XXXXXXXX",
+ "creditsText": "Made with ❤️ by Bratu Marian"
+}

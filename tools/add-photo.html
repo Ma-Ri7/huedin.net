@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adaugă o fotografie · Huedin.net</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/img/favicon.png">
+<link rel="stylesheet" href="../assets/vendor/leaflet/leaflet.css">
+<style>
+  :root {
+    --bg: #0a0a0c; --surface: #14141a; --surface-2: #1b1b22; --surface-3: #232330;
+    --line: rgba(255,255,255,.09); --text: #f4f2ee; --muted: #9c9a94;
+    --gold: #c9a227; --gold-soft: #e3c05c; --danger: #e2664a;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font-body); font-size: 14px; line-height: 1.55;
+  }
+  header {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 500;
+  }
+  header h1 { font-family: var(--font-display); font-size: 17px; margin: 0; font-weight: 600; }
+  header .sub { color: var(--muted); font-size: 12px; }
+  .grow { margin-left: auto; }
+  .chip {
+    padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line);
+    background: transparent; color: var(--text); font-size: 12px; text-decoration: none; cursor: pointer;
+  }
+  .chip:hover { border-color: var(--gold); color: var(--gold-soft); }
+  .chip.ok { color: var(--gold-soft); border-color: rgba(201,162,39,.45); }
+  .chip.warn { color: var(--danger); border-color: rgba(226,102,74,.45); }
+  button, select, input, textarea {
+    font: inherit; color: var(--text); background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+  }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--gold); }
+  button.primary { background: var(--gold); color: #17130a; border-color: transparent; font-weight: 600; }
+  button.primary:hover { filter: brightness(1.08); }
+  button.primary:disabled { opacity: .5; cursor: default; filter: none; }
+  textarea { resize: vertical; min-height: 68px; }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .layout {
+    display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+    gap: 18px; padding: 18px; align-items: start; max-width: 1400px; margin: 0 auto;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px; margin-bottom: 16px;
+  }
+  .card h2 {
+    font-family: var(--font-display); font-size: 15px; margin: 0 0 12px;
+    color: var(--gold-soft); font-weight: 600;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .field input, .field select, .field textarea { width: 100%; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .drop {
+    border: 2px dashed var(--line); border-radius: 10px; padding: 22px 16px;
+    text-align: center; background: rgba(255,255,255,.02); transition: border-color .2s, background .2s;
+  }
+  .drop.over { border-color: var(--gold); background: rgba(201,162,39,.08); }
+  .drop p { margin: 0 0 6px; }
+  .drop button { background: transparent; border: 0; color: var(--gold-soft); text-decoration: underline; padding: 0; }
+  #imagePreview { margin-top: 12px; display: grid; gap: 10px; }
+  #imagePreview img { width: 100%; max-height: 320px; object-fit: contain; border-radius: 8px; background: #0d0d10; border: 1px solid var(--line); }
+  #imagePreview .meta { font-size: 12px; color: var(--muted); }
+  .orig-preview { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .orig-preview img { width: 74px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+  #minimap { height: 260px; border-radius: 8px; border: 1px solid var(--line); background: #0d0d10; }
+  .coords-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .coords-row input { width: 120px; }
+  .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
+  .actions .primary { padding: 11px 22px; font-size: 15px; }
+  aside { position: sticky; top: 74px; }
+  .result { border-radius: 10px; padding: 16px; border: 1px solid var(--line); background: var(--surface); margin-bottom: 16px; }
+  .result.ok { border-color: rgba(201,162,39,.5); }
+  .result.err { border-color: rgba(226,102,74,.55); }
+  .result h3 { margin: 0 0 8px; font-family: var(--font-display); font-size: 16px; }
+  .result img { width: 100%; border-radius: 8px; border: 1px solid var(--line); margin: 8px 0; }
+  .result a.btn {
+    display: inline-block; margin: 6px 8px 0 0; padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--text); text-decoration: none; font-size: 13px;
+  }
+  .result a.btn:hover { border-color: var(--gold); color: var(--gold-soft); }
+  .recent { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+  .recent img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+  .recent a { display: block; }
+  .recent a:hover img { border-color: var(--gold); }
+  .toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    background: var(--surface-3); border: 1px solid var(--gold); padding: 10px 18px;
+    border-radius: 8px; z-index: 2000; display: none; max-width: 80vw;
+  }
+  .toast.show { display: block; }
+  @media (max-width: 1000px) {
+    .layout { grid-template-columns: 1fr; }
+    aside { position: static; }
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Adaugă o fotografie</h1>
+    <div class="sub">Unealtă locală de lucru. Nu face parte din site-ul publicat.</div>
+  </div>
+  <div class="grow"></div>
+  <span class="chip" id="apiStatus">se verifică serverul…</span>
+  <a class="chip" href="/tools/set-hero.html">Imagine header</a>
+  <a class="chip" href="/tools/coords-editor.html">Editor coordonate</a>
+  <a class="chip" href="/arhiva.html" target="_blank" rel="noopener">Arhivă</a>
+  <a class="chip" href="/harta.html" target="_blank" rel="noopener">Hartă</a>
+</header>
+
+<main class="layout">
+  <form id="addForm" novalidate>
+    <section class="card">
+      <h2>1. Imaginea</h2>
+      <div class="drop" id="drop">
+        <p><strong>Trage imaginea aici</strong> sau <button type="button" id="pickImage">alege fișierul</button></p>
+        <p class="hint">Format .webp sau .jpg. Nu redimensiona originalul — miniaturile se generează automat.</p>
+        <input type="file" id="imageFile" accept="image/*" hidden>
+      </div>
+      <div id="imagePreview" hidden></div>
+
+      <div style="margin-top:14px">
+        <label for="originalFile" style="cursor:pointer">Original alb-negru (opțional, recomandat)</label>
+        <input type="file" id="originalFile" accept="image/*">
+        <div class="orig-preview" id="originalPreview" hidden></div>
+        <p class="hint">Dacă îl încarci, va fi legat în pagina fotografiei ca „original alb-negru”.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Datele fotografii</h2>
+      <div class="field">
+        <label for="title">Titlu (obligatoriu)</label>
+        <input id="title" name="title" type="text" placeholder="ex: Strada Horea" required>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="year">An / perioadă (text original)</label>
+          <input id="year" name="year" type="text" placeholder="ex: Anul: 1942">
+          <p class="hint">Scrie exact cum e documentat: <em>Anul: 1942</em>, <em>aprox. 1900</em>,
+            <em>anii '40</em>, <em>1965-1972</em>, <em>Perioada: interbelică</em>. Lasă gol dacă nu știi.</p>
+        </div>
+        <div class="field">
+          <label for="period">Perioada din filtre</label>
+          <select id="period" name="period"><option value="">— nespecificată —</option></select>
+          <p class="hint">Folosită de filtrul „Perioadă" din arhivă și de pe hartă.</p>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="location">Localitate</label>
+          <select id="location" name="location"><option value="">— nespecificată —</option></select>
+        </div>
+        <div class="field">
+          <label for="tags">Etichete (separate prin virgulă)</label>
+          <input id="tags" name="tags" type="text" placeholder="ex: piață, comerț">
+        </div>
+      </div>
+      <div class="field">
+        <label for="alt">Descriere scurtă (text alternativ)</label>
+        <input id="alt" name="alt" type="text" placeholder="ex: Strada Horea din Huedin, 1942">
+        <p class="hint">Dacă lipsește, se folosește titlul. Ajută la căutare și la accesibilitate.</p>
+      </div>
+      <div class="field">
+        <label for="description">Descriere / context istoric (opțional)</label>
+        <textarea id="description" name="description" placeholder="Detalii despre fotografie, oameni, clădiri, eveniment…"></textarea>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="source">Sursa imaginii (opțional)</label>
+          <input id="source" name="source" type="text" placeholder="ex: colecție privată, arhivă online">
+        </div>
+        <div class="field">
+          <label for="credits">Credite (opțional)</label>
+          <input id="credits" name="credits" type="text" placeholder="ex: foto: familia Pop">
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Poziția pe hartă (opțional)</h2>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text)">
+        <input type="checkbox" id="useCoords" style="width:auto"> Adaug coordonate proprii pentru această fotografie
+      </label>
+      <div id="coordsBox" hidden style="margin-top:12px">
+        <div id="minimap"></div>
+        <div class="coords-row">
+          <label style="margin:0">Lat</label><input id="lat" type="text" inputmode="decimal" placeholder="46.86327">
+          <label style="margin:0">Lng</label><input id="lng" type="text" inputmode="decimal" placeholder="23.01700">
+          <button type="button" class="chip" id="clearCoords">șterge punctul</button>
+        </div>
+        <div class="coords-row">
+          <label style="margin:0">Precizie</label>
+          <select id="certainty" style="width:auto">
+            <option value="approximate">aproximativă</option>
+            <option value="exact">exactă</option>
+          </select>
+          <label style="margin:0">Sursă</label>
+          <input id="coordinateSource" type="text" style="flex:1;min-width:220px"
+            value="Poziționare manuală pe harta OpenStreetMap">
+        </div>
+        <p class="hint">Click pe hartă pentru a plasa punctul. Poți trage pinul pentru ajustare fină.</p>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="submit" class="primary" id="submitBtn">Adaugă fotografia</button>
+      <button type="button" id="resetBtn">Golește formularul</button>
+      <span class="hint" id="formHint"></span>
+    </div>
+  </form>
+
+  <aside>
+    <div class="result" id="result">
+      <h3>Pregătit</h3>
+      <p class="hint">Completează formularul și apasă „Adaugă fotografia". Imaginea este salvată,
+        catalogul este actualizat, miniaturile se generează și site-ul se regenerează automat.</p>
+    </div>
+    <div class="card">
+      <h2>Adăugate recent</h2>
+      <ul class="recent" id="recent"></ul>
+      <p class="hint" id="recentHint"></p>
+    </div>
+  </aside>
+</main>
+<div class="toast" id="toast"></div>
+
+
+<script src="/tools/local-guard.js"></script>
+<script src="../assets/vendor/leaflet/leaflet.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // unealtă locală: nu funcționează pe domeniul public
+  if (window.huedinLocalTool && !window.huedinLocalTool.isLocal()) {
+    window.huedinLocalTool.block();
+    return;
+  }
+
+  var HUE = { lat: 46.86326641627756, lng: 23.016986552462303, zoom: 14 };
+  var apiReady = false;
+  var imageData = null;     // { name, dataUrl, size }
+  var originalData = null;
+  var point = null;         // { lat, lng }
+
+  var el = function (id) { return document.getElementById(id); };
+  var toastEl = el('toast');
+  var toastTimer = null;
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 4000);
+  }
+
+  function esc(v) {
+    return String(v === null || v === undefined ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function humanSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+  }
+
+  function readFile(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve({ name: file.name, dataUrl: r.result, size: file.size }); };
+      r.onerror = function () { reject(new Error('fișierul nu a putut fi citit')); };
+      r.readAsDataURL(file);
+    });
+  }
+
+  /* ------------------------- harta pentru coordonate ------------------------- */
+  var map = L.map('minimap', { center: [HUE.lat, HUE.lng], zoom: HUE.zoom, scrollWheelZoom: true });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  var marker = null;
+  function setPoint(lat, lng) {
+    point = { lat: Math.round(lat * 1e6) / 1e6, lng: Math.round(lng * 1e6) / 1e6 };
+    el('lat').value = point.lat;
+    el('lng').value = point.lng;
+    if (marker) map.removeLayer(marker);
+    marker = L.marker([point.lat, point.lng], {
+      draggable: true,
+      icon: L.divIcon({
+        className: 'pin',
+        html: '<span style="display:block;width:20px;height:20px;border-radius:50%;'
+          + 'background:#e3c05c;border:3px solid #14140f;box-shadow:0 0 0 6px rgba(227,192,92,.3)"></span>',
+        iconSize: [20, 20], iconAnchor: [10, 10]
+      })
+    }).addTo(map);
+    marker.on('dragend', function (e) {
+      var ll = e.target.getLatLng();
+      setPoint(ll.lat, ll.lng);
+    });
+  }
+
+  function clearPoint() {
+    point = null;
+    el('lat').value = '';
+    el('lng').value = '';
+    if (marker) { map.removeLayer(marker); marker = null; }
+  }
+
+  map.on('click', function (e) { setPoint(e.latlng.lat, e.latlng.lng); });
+  el('clearCoords').addEventListener('click', clearPoint);
+  el('lat').addEventListener('change', function () {
+    var la = parseFloat(el('lat').value.replace(',', '.'));
+    var ln = parseFloat(el('lng').value.replace(',', '.'));
+    if (Number.isFinite(la) && Number.isFinite(ln)) { setPoint(la, ln); map.setView([la, ln], 16); }
+  });
+  el('lng').addEventListener('change', function () { el('lat').dispatchEvent(new Event('change')); });
+  el('useCoords').addEventListener('change', function () {
+    el('coordsBox').hidden = !this.checked;
+    if (this.checked) setTimeout(function () { map.invalidateSize(); }, 60);
+    else clearPoint();
+  });
+
+
+  /* ------------------------------ încărcare fișiere ------------------------------ */
+  var drop = el('drop');
+  el('pickImage').addEventListener('click', function () { el('imageFile').click(); });
+  drop.addEventListener('click', function (e) { if (e.target === drop) el('imageFile').click(); });
+
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); });
+  });
+  drop.addEventListener('drop', function (e) {
+    var f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handleImage(f);
+  });
+  el('imageFile').addEventListener('change', function () {
+    if (this.files && this.files[0]) handleImage(this.files[0]);
+  });
+  el('originalFile').addEventListener('change', function () {
+    if (this.files && this.files[0]) handleOriginal(this.files[0]);
+  });
+
+  function handleImage(file) {
+    if (!/^image\//.test(file.type)) { toast('Fișierul nu pare a fi o imagine.'); return; }
+    readFile(file).then(function (data) {
+      imageData = data;
+      el('imagePreview').hidden = false;
+      el('imagePreview').innerHTML = '<img src="' + data.dataUrl + '" alt="previzualizare">'
+        + '<p class="meta">' + esc(data.name) + ' · ' + humanSize(data.size) + '</p>';
+      if (!el('title').value) {
+        el('title').value = data.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+      }
+      updateHint();
+    }).catch(function (e) { toast(e.message); });
+  }
+
+  function handleOriginal(file) {
+    readFile(file).then(function (data) {
+      originalData = data;
+      el('originalPreview').hidden = false;
+      el('originalPreview').innerHTML = '<img src="' + data.dataUrl + '" alt="original">'
+        + '<span>' + esc(data.name) + ' · ' + humanSize(data.size) + '</span>';
+    }).catch(function (e) { toast(e.message); });
+  }
+
+  /* ------------------------------ date din catalog ------------------------------ */
+  var locations = [];
+  Promise.all([
+    fetch('../data/periods.json').then(function (r) { return r.json(); }),
+    fetch('../data/locations.json').then(function (r) { return r.json(); })
+  ]).then(function (res) {
+    var sel = el('period');
+    res[0].periods.forEach(function (p) {
+      var o = document.createElement('option');
+      o.value = p.id; o.textContent = p.label;
+      sel.appendChild(o);
+    });
+    res[0].eras.forEach(function (era) {
+      var o = document.createElement('option');
+      o.value = 'era:' + era.id; o.textContent = era.label;
+      sel.appendChild(o);
+    });
+
+    locations = res[1].locations;
+    var locSel = el('location');
+    locations.forEach(function (l) {
+      var o = document.createElement('option');
+      o.value = l.id; o.textContent = l.name + (typeof l.latitude === 'number' ? '' : ' (fără coordonate)');
+      locSel.appendChild(o);
+    });
+    if (locations.length) {
+      var huedin = locations.find(function (l) { return l.id === 'huedin'; });
+      if (huedin) { locSel.value = 'huedin'; }
+    }
+    loadRecent();
+  }).catch(function (err) {
+    toast('Nu am putut încărca datele: ' + err.message);
+  });
+
+  function loadRecent() {
+    fetch('../data/photos.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var manual = data.photos.filter(function (p) { return p.origin === 'manual'; });
+        var list = manual.slice(-8).reverse();
+        el('recentHint').textContent = manual.length
+          ? manual.length + ' fotografii adăugate prin acest formular.'
+          : 'Încă nu ai adăugat nicio fotografie prin acest formular.';
+        el('recent').innerHTML = list.map(function (p) {
+          return '<li><a href="/foto/' + esc(p.slug) + '.html" target="_blank" rel="noopener" '
+            + 'title="' + esc(p.title) + '"><img src="../' + esc(p.image) + '" alt=""></a></li>';
+        }).join('');
+      })
+      .catch(function () { /* ignorăm */ });
+  }
+
+
+  /* ------------------------------ detectare API ------------------------------ */
+  fetch('/api/status', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (out) {
+      if (!out || !out.ok) throw new Error('fără API');
+      apiReady = true;
+      el('apiStatus').className = 'chip ok';
+      el('apiStatus').textContent = 'server OK · salvare directă';
+    })
+    .catch(function () {
+      apiReady = false;
+      el('apiStatus').className = 'chip warn';
+      el('apiStatus').textContent = 'server fără API — pornește „npm run serve”';
+      el('submitBtn').disabled = true;
+      toast('Pentru adăugare directă, pornește serverul cu „npm run serve”.');
+    });
+
+  function updateHint() {
+    var parts = [];
+    if (imageData) parts.push('imagine încărcată');
+    else parts.push('lipsește imaginea');
+    if (!el('year').value.trim()) parts.push('fără datare (va apărea „Necunoscut”)');
+    if (!el('period').value) parts.push('fără perioadă în filtre');
+    el('formHint').textContent = parts.join(' · ');
+  }
+  ['year', 'period', 'title'].forEach(function (id) {
+    el(id).addEventListener('input', updateHint);
+    el(id).addEventListener('change', updateHint);
+  });
+  updateHint();
+
+  /* ------------------------------ trimitere ------------------------------ */
+  function resetForm() {
+    el('addForm').reset();
+    imageData = null; originalData = null;
+    el('imagePreview').hidden = true; el('imagePreview').innerHTML = '';
+    el('originalPreview').hidden = true; el('originalPreview').innerHTML = '';
+    el('coordsBox').hidden = true;
+    clearPoint();
+    updateHint();
+  }
+  el('resetBtn').addEventListener('click', resetForm);
+
+  el('addForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (!apiReady) { toast('Serverul nu are endpoint-ul de salvare. Rulează „npm run serve”.'); return; }
+    if (!imageData) { toast('Încarcă mai întâi imaginea.'); return; }
+    if (!el('title').value.trim()) { toast('Completează titlul.'); el('title').focus(); return; }
+
+    var periodValue = el('period').value;
+    var payload = {
+      title: el('title').value.trim(),
+      year: el('year').value.trim(),
+      alt: el('alt').value.trim(),
+      description: el('description').value.trim(),
+      source: el('source').value.trim(),
+      credits: el('credits').value.trim(),
+      tags: el('tags').value.trim(),
+      locationId: el('location').value,
+      period: periodValue.indexOf('era:') === 0 ? '' : periodValue,
+      legacyFilter: null,
+      latitude: point ? point.lat : '',
+      longitude: point ? point.lng : '',
+      certainty: el('certainty').value,
+      coordinateSource: el('coordinateSource').value.trim(),
+      image: { name: imageData.name, dataUrl: imageData.dataUrl },
+      original: originalData ? { name: originalData.name, dataUrl: originalData.dataUrl } : null
+    };
+    if (periodValue.indexOf('era:') === 0) {
+      payload.year = payload.year || ('Perioada: ' + el('period').selectedOptions[0].textContent);
+    }
+
+    var btn = el('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Se încarcă…';
+    el('result').className = 'result';
+    el('result').innerHTML = '<h3>Se procesează…</h3><p class="hint">Se salvează imaginea, '
+      + 'se generează miniaturile și se regenerează site-ul.</p>';
+
+    fetch('/api/photos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function (r) { return r.json().then(function (o) { return { status: r.status, out: o }; }); })
+      .then(function (res) {
+        var out = res.out;
+        if (!out.ok) throw new Error(out.error || ('eroare HTTP ' + res.status));
+
+        var p = out.photo;
+        el('result').className = 'result ok';
+        el('result').innerHTML = [
+          '<h3>Fotografie adăugată ✓</h3>',
+          '<img src="' + esc(imageData.dataUrl) + '" alt="">',
+          '<p><strong>' + esc(p.title) + '</strong><br>',
+          '<span class="hint">' + esc(p.id) + ' · ' + esc(p.yearLabel)
+            + (p.locationName ? ' · ' + esc(p.locationName) : '') + '</span></p>',
+          '<p class="hint">' + (out.rebuild && out.rebuild.ok
+            ? 'Site regenerat (' + (out.rebuild.pages || '?') + ' pagini).'
+            : 'ATENȚIE: regenerarea paginilor a eșuat — rulează „npm run build”.') + '</p>',
+          '<a class="btn" href="' + esc(out.pageUrl) + '" target="_blank" rel="noopener">Vezi pagina fotografiei</a>',
+          out.mapUrl ? '<a class="btn" href="' + esc(out.mapUrl) + '" target="_blank" rel="noopener">Vezi pe hartă</a>' : '',
+          '<a class="btn" href="/arhiva.html" target="_blank" rel="noopener">Arhivă</a>'
+        ].join('');
+        toast('✓ Fotografia a fost adăugată pe site.');
+        resetForm();
+        loadRecent();
+      })
+      .catch(function (err) {
+        el('result').className = 'result err';
+        el('result').innerHTML = '<h3>Nu am putut adăuga fotografia</h3>'
+          + '<p class="hint">' + esc(err.message) + '</p>';
+        toast('Eroare: ' + err.message);
+      })
+      .finally(function () {
+        btn.disabled = !apiReady;
+        btn.textContent = 'Adaugă fotografia';
+      });
+  });
+})();
+</script>
+</body>
+</html>
+

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /tools/
+Disallow: /docs/
+Disallow: /backup/
+Disallow: /node_modules/
+
+Sitemap: https://huedin.net/sitemap.xml

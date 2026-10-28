@@ -1,0 +1,27 @@
+# ==========================================================================
+# Configurație GitHub Pages (Jekyll)
+#
+# Publicăm DOAR site-ul static. Uneltele de dezvoltare, documentația internă și
+# backup-urile rămân locale și NU ajung pe site-ul public.
+#
+# ⚠️ ATENȚIE: nu adăugați fișierul `.nojekyll` — acesta ar dezactiva procesarea
+# Jekyll și, implicit, lista de excluderi de mai jos (totul ar fi publicat).
+# ==========================================================================
+
+exclude:
+  - tools
+  - docs
+  - backup
+  - node_modules
+  - package.json
+  - package-lock.json
+  - README.md
+  - data/legacy-inventory.json
+  # ghid intern de utilizare (conține linkuri către uneltele locale)
+  - UTILIZARE.pdf
+
+# Fără pluginuri: build minim, doar copiere de fișiere statice.
+plugins: []
+
+# Nu procesăm nimic cu Liquid în fișierele noastre (sunt statice, fără front matter).
+# Fișierele HTML generate nu au front matter, deci sunt copiate ca atare.
