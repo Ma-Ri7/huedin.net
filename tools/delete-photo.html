@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Șterge fotografii · Huedin.net</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/img/favicon.png">
+<style>
+  :root {
+    --bg: #0c0b0e; --surface: #17161c; --surface-2: #1e1d24; --surface-3: #272630;
+    --line: rgba(255,255,255,.08); --text: #f6f3ed; --muted: #9e9a91;
+    --gold: #c9a227; --gold-soft: #e3c05c; --danger: #e2664a;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.55; }
+  header {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 500;
+  }
+  header h1 { font-family: var(--font-display); font-size: 17px; margin: 0; font-weight: 600; }
+  header .sub { color: var(--muted); font-size: 12px; }
+  .grow { margin-left: auto; }
+  .chip { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 12px; text-decoration: none; cursor: pointer; }
+  .chip:hover { border-color: var(--gold); color: var(--gold-soft); }
+  .chip.ok { color: var(--gold-soft); border-color: rgba(201,162,39,.45); }
+  .chip.warn { color: var(--danger); border-color: rgba(226,102,74,.45); }
+  button, input, select { font: inherit; color: var(--text); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--gold); }
+  button.primary { background: var(--gold); color: #17130a; border-color: transparent; font-weight: 600; }
+  button.primary:disabled { opacity: .45; cursor: default; }
+  button.primary:disabled:hover { border-color: transparent; }
+  button.danger { background: var(--danger); color: #1a0d09; border-color: transparent; font-weight: 600; }
+  button.danger:disabled { opacity: .4; cursor: default; }
+  button.ghost { background: transparent; }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  main { max-width: 1500px; margin: 0 auto; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 18px; align-items: start; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+  .card h2 { font-family: var(--font-display); font-size: 15px; margin: 0 0 12px; color: var(--gold-soft); font-weight: 600; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  code { background: var(--surface-3); padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tabs button[aria-pressed="true"] { background: rgba(201,162,39,.16); border-color: var(--gold); color: var(--gold-soft); }
+  #search { flex: 1 1 220px; min-width: 180px; }
+  #photoGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; max-height: 62vh; overflow-y: auto; padding: 2px; }
+  .pcard { position: relative; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #0f0e12; cursor: pointer; padding: 0; text-align: left; display: block; width: 100%; }
+  .pcard img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #0f0e12; }
+  .pcard .meta { padding: 6px 8px 8px; }
+  .pcard .t { font-size: 11px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pcard .y { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .pcard:hover { border-color: var(--gold); }
+  .pcard[aria-pressed="true"] { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,162,39,.35); }
+  .pcard[aria-pressed="true"]::after {
+    content: "✓"; position: absolute; top: 5px; right: 5px; width: 20px; height: 20px;
+    display: grid; place-items: center; border-radius: 50%; background: var(--gold); color: #17130a;
+    font-size: 12px; font-weight: 700;
+  }
+  .badges { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 5px; }
+  .badge { font-size: 9px; text-transform: uppercase; letter-spacing: .06em; padding: 2px 6px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .badge.legacy { color: var(--gold-soft); border-color: rgba(201,162,39,.4); }
+  .badge.manual { color: #7fd1a6; border-color: rgba(127,209,166,.4); }
+  .badge.coords { color: #8ab6e8; border-color: rgba(138,182,232,.4); }
+  .status { border-radius: 8px; padding: 12px; border: 1px solid var(--line); background: var(--surface); margin-bottom: 12px; }
+  .status.ok { border-color: rgba(201,162,39,.5); }
+  .status.err { border-color: rgba(226,102,74,.55); }
+  .status strong { display: block; margin-bottom: 6px; }
+  .toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--surface-3); border: 1px solid var(--gold); padding: 10px 18px; border-radius: 8px; z-index: 2000; display: none; max-width: 80vw; }
+  .toast.show { display: block; }
+  .toast.err { border-color: var(--danger); }
+  /* dialog de confirmare */
+  .modal { position: fixed; inset: 0; background: rgba(8,7,10,.78); display: none; place-items: center; z-index: 3000; padding: 20px; overflow-y: auto; }
+  .modal.show { display: grid; }
+  .dialog { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; max-width: 470px; width: 100%; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+  .dialog h3 { font-family: var(--font-display); margin: 0 0 8px; font-size: 18px; }
+  .dialog .preview { display: flex; gap: 12px; align-items: flex-start; margin: 14px 0; }
+  .dialog .preview img { width: 110px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); flex: none; }
+  .dialog .warn { border: 1px solid rgba(226,102,74,.5); background: rgba(226,102,74,.08); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #f0b7a6; margin: 12px 0; }
+  .dialog .info { border: 1px solid rgba(201,162,39,.4); background: rgba(201,162,39,.07); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--gold-soft); margin: 12px 0; }
+  .dialog .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+  /* coș de reciclare */
+  .trash-item { display: flex; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; background: var(--surface-2); }
+  .trash-item .info { flex: 1; min-width: 0; }
+  .trash-item .info strong { display: block; font-size: 12px; font-weight: 600; }
+  .trash-item .info span { font-size: 10px; color: var(--muted); }
+  .trash-empty { font-size: 12px; color: var(--muted); }
+  /* panoul de selecție */
+  #selectedCard .sel-img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: #0f0e12; margin-bottom: 12px; }
+  #selectedCard .sel-title { font-family: var(--font-display); font-size: 16px; margin: 0 0 4px; }
+  dl.kv { margin: 12px 0 0; font-size: 12px; }
+  dl.kv > div { display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+  dl.kv dt { color: var(--muted); min-width: 96px; margin: 0; flex: none; }
+  dl.kv dd { margin: 0; flex: 1; word-break: break-word; }
+  @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Șterge fotografii din arhivă</h1>
+    <div class="sub">Unealtă locală. Ștergerea este reversibilă: fotografia merge în coș (<code>backup/deleted/</code>).</div>
+  </div>
+  <div class="grow"></div>
+  <span class="chip" id="apiStatus">se verifică serverul…</span>
+  <a class="chip" href="/tools/add-photo.html">Adaugă fotografie</a>
+  <a class="chip" href="/tools/coords-editor.html">Editor coordonate</a>
+  <a class="chip" href="/tools/set-hero.html">Imagine header</a>
+  <a class="chip" href="/arhiva.html" target="_blank" rel="noopener">Vezi arhiva</a>
+</header>
+
+<main>
+  <div>
+    <section class="card">
+      <h2>1. Alege fotografia pe care vrei să o ștergi</h2>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Caută după titlu, an, locație sau identificator (p123)…">
+        <div class="tabs">
+          <button id="tab-all" aria-pressed="true">Toate</button>
+          <button id="tab-legacy" aria-pressed="false">Din arhiva originală</button>
+          <button id="tab-manual" aria-pressed="false">Adăugate de mine</button>
+          <button id="tab-nocoords" aria-pressed="false">Fără coordonate</button>
+        </div>
+      </div>
+      <div id="photoGrid" aria-live="polite"></div>
+      <p class="hint" id="gridHint">Se încarcă…</p>
+    </section>
+  </div>
+
+  <aside>
+    <div class="status" id="status">
+      <strong>Cum funcționează</strong>
+      <p class="hint">Alegi o fotografie din grilă → apeși <strong>Șterge fotografia</strong> → confirmi. Fotografia dispare din arhivă, hartă, căutare și din pagina ei, iar site-ul se regenerează automat.</p>
+      <p class="hint"><strong>Fișierele nu sunt distruse.</strong> Sunt mutate în <code>backup/deleted/</code>. Poți readuce orice fotografie cu un click, din lista „Coș de reciclare".</p>
+    </div>
+
+    <div class="card" id="selectedCard">
+      <h2>2. Fotografia selectată</h2>
+      <p class="hint" id="selEmpty">Nicio fotografie selectată. Alege una din grila din stânga.</p>
+      <div id="selBody" hidden></div>
+      <button class="danger" id="deleteBtn" disabled style="width:100%; margin-top:14px">Șterge fotografia</button>
+    </div>
+
+    <div class="card">
+      <h2>Coș de reciclare <span class="hint" id="trashCount" style="display:inline"></span></h2>
+      <div id="trashList"></div>
+      <button class="ghost" id="purgeBtn" hidden style="margin-top:6px; color:var(--danger); border-color:rgba(226,102,74,.45)">Golește coșul definitiv</button>
+    </div>
+  </aside>
+</main>
+
+<div class="modal" id="modal">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Confirmă ștergerea</h3>
+    <div id="modalBody"></div>
+    <div class="actions">
+      <button class="ghost" id="modalCancel">Anulează</button>
+      <button class="danger" id="modalConfirm">Da, șterge fotografia</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/tools/local-guard.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  // unealtă locală: nu funcționează pe domeniul public
+  if (window.huedinLocalTool && !window.huedinLocalTool.isLocal()) {
+    window.huedinLocalTool.block();
+    return;
+  }
+
+  var state = { photos: [], deleted: [], selected: null, tab: 'all', query: '', busy: false };
+  var el = function (id) { return document.getElementById(id); };
+  var toastTimer = null;
+
+  function toast(msg, isError) {
+    var t = el('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' err' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, isError ? 8000 : 5000);
+  }
+
+  function esc(v) {
+    return String(v === null || v === undefined ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // căutare fără diacritice (identică cu normalizarea din site)
+  function norm(v) {
+    return String(v === null || v === undefined ? '' : v)
+      .toLowerCase()
+      .replace(/[ăâ]/g, 'a').replace(/î/g, 'i').replace(/ș/g, 's').replace(/ț/g, 't')
+      .replace(/[ĂÂ]/g, 'a').replace(/Î/g, 'i').replace(/Ș/g, 's').replace(/Ț/g, 't')
+      .replace(/[şţ]/g, 's').replace(/[ŞŢ]/g, 'S')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function api(method, url, body) {
+    return fetch(url, {
+      method: method,
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      return r.json().catch(function () { return { ok: false, error: 'răspuns neașteptat de la server' }; });
+    });
+  }
+
+  function isLegacy(p) { return p.origin !== 'manual'; }
+
+  /* --------------------------- încărcare listă --------------------------- */
+  function load() {
+    return api('GET', '/api/photos/list').then(function (res) {
+      if (!res.ok) throw new Error(res.error || 'serverul nu a răspuns');
+      state.photos = res.photos || [];
+      state.deleted = res.deleted || [];
+
+      el('apiStatus').className = 'chip ok';
+      el('apiStatus').textContent = state.photos.length + ' fotografii în arhivă';
+      el('status').className = 'status ok';
+
+      // dacă fotografia selectată nu mai există (a fost ștearsă), deselectăm
+      if (state.selected && !state.photos.some(function (p) { return p.id === state.selected; })) {
+        state.selected = null;
+      }
+      renderGrid();
+      renderSelected();
+      renderTrash();
+    }).catch(function (e) {
+      el('apiStatus').className = 'chip warn';
+      el('apiStatus').textContent = 'server indisponibil';
+      el('status').className = 'status err';
+      el('gridHint').innerHTML = 'Serverul local nu răspunde. Pornește-l cu '
+        + '<code>npm run serve</code> și deschide pagina la '
+        + '<code>http://localhost:8000/tools/delete-photo.html</code>.';
+      toast('Eroare: ' + e.message, true);
+    });
+  }
+
+
+  /* --------------------------- grila de fotografii --------------------------- */
+  function visible() {
+    var q = norm(state.query);
+    return state.photos.filter(function (p) {
+      if (state.tab === 'legacy' && !isLegacy(p)) return false;
+      if (state.tab === 'manual' && isLegacy(p)) return false;
+      if (state.tab === 'nocoords' && p.hasCoords) return false;
+      if (!q) return true;
+      return norm([p.title, p.yearLabel, p.yearText, p.location, p.id, p.slug].join(' ')).indexOf(q) !== -1;
+    });
+  }
+
+  function renderGrid() {
+    var list = visible();
+    var grid = el('photoGrid');
+
+    grid.innerHTML = list.map(function (p) {
+      var badges = '';
+      badges += isLegacy(p)
+        ? '<span class="badge legacy">arhivă</span>'
+        : '<span class="badge manual">adăugată de mine</span>';
+      if (p.hasCoords) badges += '<span class="badge coords">pe hartă</span>';
+      return '<button class="pcard" data-id="' + esc(p.id) + '" aria-pressed="'
+        + (state.selected === p.id ? 'true' : 'false') + '">'
+        + (p.thumb ? '<img src="../' + esc(p.thumb) + '" alt="" loading="lazy">'
+                   : '<img alt="" style="background:#0f0e12">')
+        + '<span class="meta"><span class="t">' + esc(p.title) + '</span>'
+        + '<span class="y">' + esc(p.yearLabel || p.yearText || 'fără datare') + '</span>'
+        + '<span class="badges">' + badges + '</span></span></button>';
+    }).join('');
+
+    el('gridHint').textContent = list.length === state.photos.length
+      ? state.photos.length + ' fotografii. Alege una pentru a o șterge.'
+      : list.length + ' din ' + state.photos.length + ' fotografii (filtrate).';
+
+    Array.prototype.forEach.call(grid.querySelectorAll('.pcard'), function (btn) {
+      btn.addEventListener('click', function () {
+        state.selected = btn.getAttribute('data-id');
+        renderGrid();
+        renderSelected();
+        var card = el('selectedCard');
+        if (card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+  }
+
+  /* --------------------------- fotografia selectată --------------------------- */
+  function renderSelected() {
+    var p = state.photos.filter(function (x) { return x.id === state.selected; })[0];
+    var btn = el('deleteBtn');
+
+    if (!p) {
+      el('selEmpty').hidden = false;
+      el('selBody').hidden = true;
+      btn.disabled = true;
+      btn.textContent = 'Șterge fotografia';
+      return;
+    }
+
+    el('selEmpty').hidden = true;
+    el('selBody').hidden = false;
+    el('selBody').innerHTML =
+      (p.thumb ? '<img class="sel-img" src="../' + esc(p.thumb) + '" alt="">' : '')
+      + '<h3 class="sel-title">' + esc(p.title) + '</h3>'
+      + '<div class="badges" style="margin-bottom:4px">'
+      + (isLegacy(p) ? '<span class="badge legacy">din arhiva originală</span>'
+                     : '<span class="badge manual">adăugată de mine</span>')
+      + (p.hasCoords ? '<span class="badge coords">are pin pe hartă</span>' : '')
+      + '</div>'
+      + '<dl class="kv">'
+      + '<div><dt>Identificator</dt><dd>' + esc(p.id) + '</dd></div>'
+      + '<div><dt>Datare</dt><dd>' + esc(p.yearLabel || p.yearText || 'fără datare') + '</dd></div>'
+      + '<div><dt>Locație</dt><dd>' + esc(p.location || '—') + '</dd></div>'
+      + '<div><dt>Pagină</dt><dd>foto/' + esc(p.slug) + '.html</dd></div>'
+      + '<div><dt>Imagine</dt><dd>' + esc(p.image || '—') + '</dd></div>'
+      + '</dl>';
+
+    btn.disabled = state.busy;
+    btn.textContent = isLegacy(p) ? 'Șterge fotografia (din arhiva originală)' : 'Șterge fotografia';
+  }
+
+
+  /* --------------------------- coș de reciclare --------------------------- */
+  function renderTrash() {
+    var box = el('trashList');
+    el('trashCount').textContent = state.deleted.length ? '(' + state.deleted.length + ')' : '';
+    el('purgeBtn').hidden = state.deleted.length === 0;
+
+    if (!state.deleted.length) {
+      box.innerHTML = '<p class="trash-empty">Coșul este gol. Fotografiile șterse apar aici și pot fi readuse oricând.</p>';
+      return;
+    }
+
+    box.innerHTML = state.deleted.map(function (d) {
+      var when = d.deletedAt ? new Date(d.deletedAt).toLocaleString('ro-RO') : '';
+      return '<div class="trash-item">'
+        + '<div class="info"><strong>' + esc(d.title) + '</strong>'
+        + '<span>' + esc(d.id) + ' · ' + esc(d.yearLabel || 'fără datare')
+        + (when ? ' · ștearsă la ' + esc(when) : '') + '</span></div>'
+        + '<button class="ghost restore" data-id="' + esc(d.id) + '" style="padding:6px 10px; font-size:12px">Restaurează</button>'
+        + '</div>';
+    }).join('');
+
+    Array.prototype.forEach.call(box.querySelectorAll('.restore'), function (btn) {
+      btn.addEventListener('click', function () { doRestore(btn.getAttribute('data-id')); });
+    });
+  }
+
+  /* --------------------------- dialog de confirmare --------------------------- */
+  function openConfirm(photo) {
+    var legacy = isLegacy(photo);
+    el('modalBody').innerHTML =
+      '<div class="preview">'
+      + (photo.thumb ? '<img src="../' + esc(photo.thumb) + '" alt="">' : '')
+      + '<div><strong>' + esc(photo.title) + '</strong>'
+      + '<div class="hint">' + esc(photo.id) + ' · ' + esc(photo.yearLabel || photo.yearText || 'fără datare') + '</div>'
+      + '<div class="hint">foto/' + esc(photo.slug) + '.html</div></div></div>'
+      + (legacy
+        ? '<div class="warn"><strong>Atenție:</strong> această fotografie face parte din '
+          + '<strong>arhiva originală</strong>. Regula proiectului este păstrarea integrală a arhivei. '
+          + 'Dacă o ștergi, raportul de reconciliere va semnala diferența (fotografia nu se pierde — '
+          + 'poate fi restaurată din coș).</div>'
+        : '')
+      + '<div class="info">Fotografia va fi scoasă din arhivă, de pe hartă și din căutare, '
+      + 'iar fișierele ei vor fi mutate în <code>backup/deleted/</code>. Poți reveni oricând cu „Restaurează".</div>'
+      + '<label style="margin-top:12px">Fișiere care se mută în coș</label>'
+      + '<ul class="hint" style="margin:0; padding-left:18px">'
+      + '<li>' + esc(photo.image || '—') + '</li>'
+      + '<li>assets/img/thumbs/' + esc(photo.id) + '.webp</li>'
+      + '<li>assets/img/previews/' + esc(photo.id) + '.webp</li>'
+      + '<li>foto/' + esc(photo.slug) + '.html</li>'
+      + '</ul>';
+
+    el('modalConfirm').textContent = legacy ? 'Da, șterg din arhiva originală' : 'Da, șterge fotografia';
+    el('modal').classList.add('show');
+    el('modalConfirm').focus();
+  }
+
+  function closeConfirm() { el('modal').classList.remove('show'); }
+
+
+  /* --------------------------- acțiuni --------------------------- */
+  function setBusy(v, label) {
+    state.busy = v;
+    el('deleteBtn').disabled = v || !state.selected;
+    el('apiStatus').className = 'chip' + (v ? '' : ' ok');
+    el('apiStatus').textContent = v ? (label || 'se lucrează…') : state.photos.length + ' fotografii în arhivă';
+  }
+
+  function doDelete() {
+    var photo = state.photos.filter(function (x) { return x.id === state.selected; })[0];
+    if (!photo) return;
+    closeConfirm();
+    setBusy(true, 'se șterge…');
+
+    api('POST', '/api/photos/delete', { id: photo.id }).then(function (res) {
+      setBusy(false);
+      if (!res.ok) { toast('Nu s-a putut șterge: ' + (res.error || 'eroare necunoscută'), true); return; }
+      state.selected = null;
+      toast(res.message || 'Fotografia a fost ștearsă.');
+      return load();
+    }).catch(function (e) {
+      setBusy(false);
+      toast('Eroare de rețea: ' + e.message, true);
+    });
+  }
+
+  function doRestore(id) {
+    setBusy(true, 'se restaurează…');
+    api('POST', '/api/photos/restore', { id: id }).then(function (res) {
+      setBusy(false);
+      if (!res.ok) { toast('Nu s-a putut restaura: ' + (res.error || 'eroare necunoscută'), true); return; }
+      toast(res.message || 'Fotografia a fost restaurată.');
+      return load();
+    }).catch(function (e) {
+      setBusy(false);
+      toast('Eroare de rețea: ' + e.message, true);
+    });
+  }
+
+  function doPurge() {
+    var n = state.deleted.length;
+    if (!window.confirm('Ștergi DEFINITIV ' + n + ' fotografii din coș?\n\n'
+      + 'Fișierele vor fi eliminate de pe disc și NU mai pot fi recuperate.')) return;
+    setBusy(true, 'se golește coșul…');
+    api('POST', '/api/photos/purge', { confirm: true }).then(function (res) {
+      setBusy(false);
+      if (!res.ok) { toast('Nu s-a putut goli coșul: ' + (res.error || 'eroare necunoscută'), true); return; }
+      toast(res.message || 'Coșul a fost golit.');
+      return load();
+    }).catch(function (e) {
+      setBusy(false);
+      toast('Eroare de rețea: ' + e.message, true);
+    });
+  }
+
+
+  /* --------------------------- evenimente --------------------------- */
+  el('search').addEventListener('input', function (e) {
+    state.query = e.target.value;
+    renderGrid();
+  });
+
+  [['all', 'tab-all'], ['legacy', 'tab-legacy'], ['manual', 'tab-manual'], ['nocoords', 'tab-nocoords']]
+    .forEach(function (pair) {
+      el(pair[1]).addEventListener('click', function () {
+        state.tab = pair[0];
+        ['tab-all', 'tab-legacy', 'tab-manual', 'tab-nocoords'].forEach(function (id) {
+          el(id).setAttribute('aria-pressed', id === pair[1] ? 'true' : 'false');
+        });
+        renderGrid();
+      });
+    });
+
+  el('deleteBtn').addEventListener('click', function () {
+    var photo = state.photos.filter(function (x) { return x.id === state.selected; })[0];
+    if (photo) openConfirm(photo);
+  });
+
+  el('modalCancel').addEventListener('click', closeConfirm);
+  el('modalConfirm').addEventListener('click', doDelete);
+  el('purgeBtn').addEventListener('click', doPurge);
+
+  el('modal').addEventListener('click', function (e) {
+    if (e.target === el('modal')) closeConfirm();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeConfirm();
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>
+

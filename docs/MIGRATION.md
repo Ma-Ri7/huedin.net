@@ -27,8 +27,10 @@ npm run browser      # testare în Chrome headless (375 / 768 / 1440 px)
 | `tools/build.js` | tot `data/*.json` | toate paginile HTML, `sitemap.xml`, `robots.txt`, `data/site-stats.json` |
 | `tools/validate.js` | `data/*.json` + paginile | raport în consolă (cod de ieșire 1 la erori) |
 | `tools/reconcile.js` | inventarul legacy + catalogul nou | `docs/RECONCILIATION.md` |
-| `tools/test.js` | catalog + pagini | raport de teste (40 de teste) |
+| `tools/test.js` | catalog + pagini | raport de teste (funcții pure, catalog, HTML, linkuri, resurse) |
+| `tools/test-trash.js` | o copie temporară a proiectului | raport de teste pentru ștergerea reversibilă (rulează în sandbox) |
 | `tools/browser-check.js` | site-ul generat | `docs/BROWSER-REPORT.md` + `docs/screenshots/` |
+| `tools/delete-photo.html` | catalogul + click | șterge/restaurează o fotografie (prin API, în coșul `backup/deleted/`) |
 
 ## 3. Adăugarea unei fotografii noi
 
@@ -167,21 +169,47 @@ Scriptul este idempotent; folosiți `node tools/thumbs.js --force` pentru regene
 1. `npm run verify` — pipeline complet + testare în browser (0 erori).
 2. `docs/RECONCILIATION.md` — toate verificările trebuie să fie `OK`.
 3. `docs/BROWSER-REPORT.md` — fără erori de consolă și fără overflow orizontal.
-4. `data/site-stats.json` — confirmă numărul de fotografii (257) și pagini (257).
+4. `data/site-stats.json` — confirmă numărul de fotografii, pagini, ani și coordonate.
 
 ## 9. Revenire la versiunea originală
 
+Site-ul legacy este păstrat în două locuri:
+
+- **`backup/legacy-index.html`** — copie bit-cu-bit a paginii originale (SHA-256 identic);
+- **`assets/`** — toate activele legacy (CSS, JS, vendor și cele 541 de fișiere foto),
+  copiate fidel; `style.css` și `main.js` legacy sunt încă acolo, dar nu sunt folosite
+  de site-ul nou.
+
+Revenire completă:
+
 ```bash
-# Varianta 1: doar pagina principală
+# 1. pagina originală
 cp backup/legacy-index.html index.html
 
-# Varianta 2: site-ul legacy complet (HTML + CSS + JS + imagini + CNAME)
-cp Original/index.html .
-cp -R Original/assets .
-cp Original/CNAME .
+# 2. CNAME (dacă lipsește)
+cp backup/CNAME .
+
+# 3. activele legacy sunt deja în assets/ — nu e nevoie să copiezi nimic
+#    (backup/legacy-index.html referă exact assets/css/style.css, assets/js/main.js,
+#     assets/vendor/* și assets/img/portfolio/*)
 ```
 
-`Original/` este o copie fidelă, nemodificată, a site-ului inițial.
+**Verificare înainte de revenire** (opțional, dar recomandat):
+
+```bash
+# toate activele referite de pagina legacy trebuie să existe
+grep -oE '(src|href)="assets/[^"]*"' backup/legacy-index.html \
+  | sed -E 's/^(src|href)="//;s/"$//' | sort -u | while read -r f; do
+      [ -f "$f" ] || echo "LIPSĂ: $f"
+    done
+```
+
+> Singura excepție cunoscută este `277532475_..._nn.webp` — o referință ruptă care exista
+> deja în site-ul original (fotografia p143 „Strada Poștei"); nu este o pierdere cauzată
+> de migrare.
+
+**Fișierele de conținut nu se ating la revenire**: `data/*.json`, `tools/`, `docs/` rămân
+intacte, deci poți reveni ulterior la versiunea nouă rulând `npm run build`.
 
 ## 10. Publicare (neautomată)
 

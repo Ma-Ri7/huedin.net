@@ -1,8 +1,8 @@
 # Raport de testare în browser (Chrome headless)
 
-Generat: 2026-10-28T17:12:42.424Z
+Generat: 2026-10-29T04:07:04.799Z
 
-Verificări: 131/131 trecute
+Verificări: 155/155 trecute
 
 | Verificare | Rezultat | Detaliu |
 |---|---|---|
@@ -136,6 +136,30 @@ Verificări: 131/131 trecute
 | hero: salvarea din pagină funcționează | OK | Imagine de header actualizată ✓assets/img/previews/HUEDIN-1907.webpSite regenerat (258 pagini).Vezi pagina principală |
 | hero: configurația rămâne neschimbată după test (fără efecte secundare) | OK | înainte=assets/img/previews/HUEDIN-1907.webp · după=assets/img/previews/HUEDIN-1907.webp |
 | hero: index.html regenerat folosește în continuare imaginea configurată | OK | assets/img/previews/HUEDIN-1907.webp |
+| ștergere: pagina detectează serverul cu API | OK | 258 fotografii în arhivă |
+| ștergere: grila încarcă toate fotografiile din catalog | OK | 258 carduri / 258 în catalog |
+| ștergere: fotografiile din arhiva originală sunt marcate | OK | 257 marcaje (legacy: 257) |
+| ștergere: butonul de ștergere este inactiv fără selecție | OK |  |
+| ștergere: coșul de reciclare pornește gol | OK | Coșul este gol. Fotografiile șterse apar aici și pot fi read |
+| ștergere: căutarea filtrează grila | OK | 14 rezultate pentru „biserica" |
+| ștergere: filtrul „adăugate de mine" exclude arhiva originală | OK | 0 carduri, 0 legacy |
+| ștergere: selectarea unei fotografii activează butonul | OK | „Decembrie 89" · buton: Șterge fotografia |
+| ștergere: dialogul de confirmare se deschide | OK |  |
+| ștergere: dialogul enumeră fișierele care se mută în coș | OK | Decembrie 89p258 · 1989foto/decembrie-89.htmlFotografia va fi scoasă din arhivă, de pe har |
+| ștergere: dialogul explică faptul că ștergerea este reversibilă | OK |  |
+| ștergere: anularea închide dialogul fără să șteargă nimic | OK |  |
+| ștergere: fotografia dispare din grilă | OK | 257 carduri (înainte: 258) |
+| ștergere: fotografia apare în coșul de reciclare | OK | Fotografia „Decembrie 89” a fost mutată în coș (backup/deleted). Poate fi restaurată oricând din această pagină. |
+| ștergere: mesajul confirmă că fotografia poate fi restaurată | OK | Fotografia „Decembrie 89” a fost mutată în coș (backup/deleted). Poate fi restaurată oricând din această pagină. |
+| ștergere: catalogul de pe disc este actualizat | OK | count=257 |
+| ștergere: pagina foto nu mai există pe disc | OK |  |
+| ștergere: fișierele sunt mutate în coș (nu șterse definitiv) | OK | 4 fișiere în coș |
+| ștergere: evidența coșului este scrisă | OK |  |
+| restaurare: fotografia revine în grilă | OK | 258 carduri |
+| restaurare: coșul este din nou gol | OK | Fotografia „Decembrie 89” a fost restaurată în arhivă. |
+| restaurare: catalogul revine exact la starea inițială | OK | count=258 |
+| restaurare: pagina foto este regenerată | OK |  |
+| restaurare: coșul de pe disc este gol | OK |  |
 | hartă: curățarea coordonatelor de test | OK | rămân 219 fotografii cu coordonate |
 
 ## Erori de consolă

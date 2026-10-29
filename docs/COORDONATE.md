@@ -4,7 +4,7 @@ Fiecare fotografie poate avea **coordonate proprii**. Dacă le completezi, fotog
 primește un **pin propriu pe hartă**, la poziția ei, iar pagina fotografiei afișează
 coordonatele și linkul „Vezi pe hartă”.
 
-Sunt trei metode. Pentru 257 de fotografii, **metoda A (editorul vizual) este de departe
+Sunt trei metode. Pentru sute de fotografii, **metoda A (editorul vizual) este de departe
 cea mai rapidă**.
 
 | Metodă | Când o folosești |

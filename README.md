@@ -4,7 +4,7 @@ Arhivă fotografică istorică pentru orașul **Huedin** și zonele adiacente.
 Site **static** (HTML + CSS + JavaScript), fără bază de date, fără backend și fără
 servicii cu abonament obligatoriu. Publicare pe GitHub Pages (fișierul `CNAME`).
 
-- **257 de fotografii** păstrate integral din versiunea originală
+- **Arhiva originală (257 de fotografii)** păstrată integral, plus fotografiile adăugate ulterior
 - căutare și filtrare client-side (text, an, interval, perioadă, localitate)
 - pagină individuală pentru fiecare fotografie (URL stabil, partajabil)
 - **hartă interactivă** (Leaflet + OpenStreetMap): pin pentru fiecare fotografie cu
@@ -22,7 +22,7 @@ arhiva.html           arhiva completă (căutare + filtre, încărcare client-si
 harta.html            harta interactivă a locurilor documentate
 despre.html           despre proiect (text original + structura arhivei)
 404.html              pagină de eroare (căi absolute, funcționează la orice adâncime)
-foto/<slug>.html      257 pagini individuale generate
+foto/<slug>.html      pagini individuale generate (una pentru fiecare fotografie)
 sitemap.xml           harta site-ului
 robots.txt            reguli pentru crawlere
 data/                 catalog static (JSON)
@@ -31,9 +31,10 @@ assets/js/            search-core.js · data.js · site.js · archive.js · phot
 assets/img/           imaginile (copie fidelă a originalelor) + thumbs/ + previews/
 assets/vendor/leaflet biblioteca hărții, vendorizată local
 tools/                scripturi de build, validare, reconciliere și testare
+tools/*.html          unelte locale (coordonate, adăugare/ștergere fotografii, imagine header)
 docs/                 documentație + rapoarte generate
-Original/             site-ul legacy, păstrat neatins (referință de revenire)
-backup/               snapshot-ul `index.html` original + CNAME + README
+backup/               snapshot-ul paginii originale (legacy-index.html) + CNAME + README
+_config.yml           excluderi pentru GitHub Pages (uneltele nu se publică)
 ```
 
 ## Comenzi
@@ -52,10 +53,11 @@ npm run build       # generează toate paginile HTML, sitemap, robots
 npm run validate    # validează catalogul și site-ul generat
 npm run reconcile   # compară inventarul legacy cu cel nou -> docs/RECONCILIATION.md
 npm run test        # teste automate (funcții pure, integritate, linkuri)
+npm run test-trash  # teste pentru ștergerea reversibilă (rulează într-un sandbox)
 npm run browser     # testare în Chrome headless la 375/768/1440 px
-npm run pipeline    # extract + thumbs + build + validate + reconcile + test
+npm run pipeline    # extract + thumbs + build + validate + reconcile + test + test-trash
 npm run verify      # pipeline + testare în browser
-npm run serve       # server local (http://localhost:8000) cu salvare coordonate în 1 click
+npm run serve       # server local (http://localhost:8000) cu salvare directă în catalog
 npm run serve:static # server static simplu, fără salvare directă
 ```
 
@@ -64,6 +66,7 @@ npm run serve:static # server static simplu, fără salvare directă
 - [`docs/AUDIT.md`](docs/AUDIT.md) — auditul și inventarul inițial (FAZA A)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arhitectură, model de date, decizii
 - [`docs/ADD-PHOTO.md`](docs/ADD-PHOTO.md) — **tutorial: cum adaugi o fotografie nouă**
+- [`docs/STERGERE.md`](docs/STERGERE.md) — **tutorial: cum ștergi o fotografie (reversibil, prin coș)**
 - [`docs/COORDONATE.md`](docs/COORDONATE.md) — **tutorial: cum pui fiecare fotografie pe hartă (lat/lng)**
 - [`docs/MIGRATION.md`](docs/MIGRATION.md) — procesul de migrare, cum se adaugă fotografii
 - [`docs/RECONCILIATION.md`](docs/RECONCILIATION.md) — raport generat: legacy vs. arhivă nouă
@@ -80,6 +83,8 @@ npm run serve:static # server static simplu, fără salvare directă
   confirmate; restul sunt listate explicit, fără pin.
 - Imaginile originale nu sunt modificate; miniaturile sunt fișiere noi, generate non-distructiv.
 - Nicio fotografie, descriere sau legătură originală nu a fost ștearsă.
+- Ștergerea este posibilă, dar **întotdeauna reversibilă**: fotografia merge în coșul
+  `backup/deleted/` și poate fi restaurată identic. Vezi [`docs/STERGERE.md`](docs/STERGERE.md).
 
 ## Ce se publică și ce rămâne local
 

@@ -14,13 +14,14 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { slugify, parseYear, normalizeText } from '../assets/js/search-core.js';
+import { deletedIds } from './lib/photos.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const LEGACY = join(ROOT, 'backup', 'legacy-index.html');
 
 // Baza de active (imagine/vendor/css) folosită de noul site.
-// Implicit: `assets` (active copiate la rădăcină, originalul rămâne în `Original/`).
-// Se poate suprascrie cu: ASSET_BASE=Original/assets node tools/extract.js
+// Implicit: `assets` (activele legacy au fost copiate aici, în rădăcină).
+// Se poate suprascrie cu: ASSET_BASE=alt/folder node tools/extract.js
 const ASSET_BASE = (process.env.ASSET_BASE || 'assets').replace(/\/+$/, '');
 
 /** Rescrie o cale legacy `assets/...` către baza de active configurată. */
@@ -255,7 +256,17 @@ for (const p of manual) {
   usedSlugs.add(candidate);
 }
 
-const allPhotos = photos.concat(manual);
+// 3. Fotografiile ȘTERSE (mutate în coș de reciclare) NU se readuc în catalog.
+//    Fără asta, o fotografie legacy ștearsă ar reapărea la următoarea re-extracție.
+const removed = deletedIds(ROOT);
+const legacyPhotos = photos.filter((p) => !removed.has(p.id));
+manual = manual.filter((p) => !removed.has(p.id));
+const removedCount = photos.length - legacyPhotos.length;
+if (removedCount) {
+  console.log('Fotografii șterse păstrate în coș (nu se readuc):', removedCount);
+}
+
+const allPhotos = legacyPhotos.concat(manual);
 
 /* --- locații: completăm photoIds pe baza atribuirii documentate --- */
 const locations = PLACES.map((p) => ({
@@ -275,12 +286,12 @@ mkdirSync(join(ROOT, 'data'), { recursive: true });
 writeFileSync(PHOTOS_FILE, JSON.stringify({
   generatedFrom: 'backup/legacy-index.html',
   count: allPhotos.length,
-  legacyCount: photos.length,
+  legacyCount: legacyPhotos.length,
   manualCount: manual.length,
   photos: allPhotos
 }, null, 1) + '\n');
 writeFileSync(join(ROOT, 'data', 'locations.json'), JSON.stringify({ locations }, null, 1) + '\n');
-console.log('Total în catalog:', allPhotos.length, '(legacy:', photos.length + ', adăugate manual:', manual.length + ')');
+console.log('Total în catalog:', allPhotos.length, '(legacy:', legacyPhotos.length + ', adăugate manual:', manual.length + ')');
 console.log('Locații:', locations.map((l) => l.id + '(' + l.photoIds.length + ')').join(', '));
 
 writeFileSync(join(ROOT, 'data', 'legacy-inventory.json'), JSON.stringify({

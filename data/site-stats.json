@@ -21,11 +21,11 @@
  "unknownYear": 5,
  "withLocation": 184,
  "withoutLocation": 74,
- "withOwnCoordinates": 220,
+ "withOwnCoordinates": 219,
  "withExactCoordinates": 72,
- "withoutAnyCoordinates": 38,
+ "withoutAnyCoordinates": 39,
  "locationsTotal": 9,
  "locationsWithCoordinates": 1,
- "withBlackAndWhiteOriginal": 249,
+ "withBlackAndWhiteOriginal": 250,
  "brokenLegacyReferences": 1
 }

@@ -164,7 +164,7 @@ sau de o localitate cu coordonate verificate. Coordonatele pot fi adăugate ulte
 
 | Nu faceți | De ce |
 |---|---|
-| Să editați `Original/` | este versiunea veche, folosită pentru revenire |
+| Să editați `backup/` | este snapshot-ul paginii originale, folosit pentru revenire |
 | Să mutați sau să redimensionați imaginile existente | URL-urile și referințele s-ar rupe |
 | Să inventați ani sau coordonate | regulă de integritate istorică a proiectului |
 | Să publicați fără `npm run verify` | verificările pot dezvălui referințe rupte |
@@ -176,8 +176,15 @@ sau de o localitate cu coordonate verificate. Coordonatele pot fi adăugate ulte
 ```bash
 npm run serve                    # serverul din proiect (cu salvare directă)
 # http://localhost:8000/tools/add-photo.html      -> adaugă o fotografie (1 formular)
+# http://localhost:8000/tools/delete-photo.html   -> șterge o fotografie (reversibil, prin coș)
 # http://localhost:8000/tools/coords-editor.html  -> pune coordonate pe hartă
 npm run validate && npm run test # verifică
 npm run verify                   # tot + testare în browser
 ```
+
+---
+
+## Vezi și
+
+- [`STERGERE.md`](STERGERE.md) — cum ștergi o fotografie (reversibil) și cum o readuci din coș.
 

@@ -17,6 +17,8 @@ exclude:
   - package-lock.json
   - README.md
   - data/legacy-inventory.json
+  # evidența internă a fotografiilor șterse (coșul de reciclare)
+  - data/deleted-photos.json
   # ghid intern de utilizare (conține linkuri către uneltele locale)
   - UTILIZARE.pdf
 

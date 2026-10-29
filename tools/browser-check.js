@@ -806,6 +806,170 @@ async function main() {
       const indexAfter = readFileSync(join(ROOT, 'index.html'), 'utf8');
       record('hero: index.html regenerat folosește în continuare imaginea configurată',
         indexAfter.includes(heroBefore), heroBefore);
+      /* --------- Ștergerea reversibilă (tools/delete-photo.html) --------- */
+      console.log('\n--- Ștergerea fotografiilor (coș de reciclare) ---');
+
+      const catalogBefore = JSON.parse(readFileSync(join(ROOT, 'data', 'photos.json'), 'utf8'));
+      const lastPhoto = catalogBefore.photos[catalogBefore.photos.length - 1];
+
+      await page.goto(base + '/tools/delete-photo.html', { waitUntil: 'networkidle2' });
+      await wait(1500);
+
+      const delPage = await page.evaluate(() => ({
+        api: document.getElementById('apiStatus').textContent,
+        cards: document.querySelectorAll('#photoGrid .pcard').length,
+        legacyBadges: document.querySelectorAll('#photoGrid .badge.legacy').length,
+        deleteDisabled: document.getElementById('deleteBtn').disabled,
+        trash: document.getElementById('trashList').textContent.trim().slice(0, 60),
+        guard: Boolean(window.huedinLocalTool)
+      }));
+      record('ștergere: pagina detectează serverul cu API',
+        /fotografii în arhivă/.test(delPage.api), delPage.api);
+      record('ștergere: grila încarcă toate fotografiile din catalog',
+        delPage.cards === catalogBefore.count,
+        `${delPage.cards} carduri / ${catalogBefore.count} în catalog`);
+      record('ștergere: fotografiile din arhiva originală sunt marcate',
+        delPage.legacyBadges >= catalogBefore.legacyCount,
+        `${delPage.legacyBadges} marcaje (legacy: ${catalogBefore.legacyCount})`);
+      record('ștergere: butonul de ștergere este inactiv fără selecție',
+        delPage.deleteDisabled === true);
+      record('ștergere: coșul de reciclare pornește gol',
+        /Coșul este gol/.test(delPage.trash), delPage.trash);
+
+      // căutare
+      await page.type('#search', 'biserica');
+      await wait(500);
+      const delFiltered = await page.evaluate(() => document.querySelectorAll('#photoGrid .pcard').length);
+      record('ștergere: căutarea filtrează grila',
+        delFiltered > 0 && delFiltered < 30, `${delFiltered} rezultate pentru „biserica"`);
+
+      // filtru „adăugate de mine"
+      await page.click('#tab-manual');
+      await wait(400);
+      const delManual = await page.evaluate(() => ({
+        count: document.querySelectorAll('#photoGrid .pcard').length,
+        legacy: document.querySelectorAll('#photoGrid .badge.legacy').length
+      }));
+      record('ștergere: filtrul „adăugate de mine" exclude arhiva originală',
+        delManual.legacy === 0, `${delManual.count} carduri, ${delManual.legacy} legacy`);
+
+      // resetăm filtrele
+      await page.evaluate(() => {
+        const s = document.getElementById('search');
+        s.value = '';
+        s.dispatchEvent(new Event('input'));
+      });
+      await page.click('#tab-all');
+      await wait(400);
+
+      // selectăm ultima fotografie și deschidem confirmarea
+      await page.evaluate((id) => {
+        document.querySelector('#photoGrid .pcard[data-id="' + id + '"]').click();
+      }, lastPhoto.id);
+      await wait(400);
+      const delSelected = await page.evaluate(() => ({
+        enabled: !document.getElementById('deleteBtn').disabled,
+        title: document.querySelector('#selectedCard .sel-title')
+          ? document.querySelector('#selectedCard .sel-title').textContent : '',
+        label: document.getElementById('deleteBtn').textContent
+      }));
+      record('ștergere: selectarea unei fotografii activează butonul',
+        delSelected.enabled && delSelected.title === lastPhoto.title,
+        `„${delSelected.title}" · buton: ${delSelected.label}`);
+
+      await page.click('#deleteBtn');
+      await wait(500);
+      const delModal = await page.evaluate(() => ({
+        open: document.getElementById('modal').classList.contains('show'),
+        text: document.getElementById('modalBody').textContent.replace(/\s+/g, ' '),
+        confirm: document.getElementById('modalConfirm').textContent
+      }));
+      record('ștergere: dialogul de confirmare se deschide', delModal.open);
+      record('ștergere: dialogul enumeră fișierele care se mută în coș',
+        /thumbs/.test(delModal.text) && /previews/.test(delModal.text)
+        && delModal.text.includes(lastPhoto.slug + '.html'),
+        delModal.text.slice(0, 90));
+      record('ștergere: dialogul explică faptul că ștergerea este reversibilă',
+        /backup\/deleted/.test(delModal.text) && /Restaurează|restaurată/.test(delModal.text));
+
+      // anulare — nu trebuie să se întâmple nimic
+      await page.click('#modalCancel');
+      await wait(400);
+      const delCancelled = await page.evaluate(() => ({
+        open: document.getElementById('modal').classList.contains('show'),
+        cards: document.querySelectorAll('#photoGrid .pcard').length
+      }));
+      record('ștergere: anularea închide dialogul fără să șteargă nimic',
+        delCancelled.open === false && delCancelled.cards === catalogBefore.count);
+
+      // ștergere reală (reversibilă) + restaurare, ca starea să rămână neschimbată
+      await page.click('#deleteBtn');
+      await wait(500);
+      await page.click('#modalConfirm');
+      await page.waitForFunction(
+        () => document.querySelectorAll('#trashList .restore').length > 0,
+        { timeout: 240000 }
+      );
+
+      const afterDelete = await page.evaluate(() => ({
+        cards: document.querySelectorAll('#photoGrid .pcard').length,
+        trash: document.querySelectorAll('#trashList .restore').length,
+        toast: document.getElementById('toast').textContent.replace(/\s+/g, ' ').slice(0, 120),
+        api: document.getElementById('apiStatus').textContent
+      }));
+      record('ștergere: fotografia dispare din grilă', afterDelete.cards === catalogBefore.count - 1,
+        `${afterDelete.cards} carduri (înainte: ${catalogBefore.count})`);
+      record('ștergere: fotografia apare în coșul de reciclare', afterDelete.trash === 1,
+        afterDelete.toast);
+      record('ștergere: mesajul confirmă că fotografia poate fi restaurată',
+        /coș/.test(afterDelete.toast) && /restaurată/.test(afterDelete.toast), afterDelete.toast);
+
+      const catalogAfterDelete = JSON.parse(readFileSync(join(ROOT, 'data', 'photos.json'), 'utf8'));
+      record('ștergere: catalogul de pe disc este actualizat',
+        catalogAfterDelete.count === catalogBefore.count - 1
+        && !catalogAfterDelete.photos.some((p) => p.id === lastPhoto.id),
+        `count=${catalogAfterDelete.count}`);
+      record('ștergere: pagina foto nu mai există pe disc',
+        !existsSync(join(ROOT, 'foto', lastPhoto.slug + '.html')));
+      record('ștergere: fișierele sunt mutate în coș (nu șterse definitiv)',
+        existsSync(join(ROOT, 'backup', 'deleted'))
+        && readdirSync(join(ROOT, 'backup', 'deleted')).length > 0,
+        `${existsSync(join(ROOT, 'backup', 'deleted')) ? readdirSync(join(ROOT, 'backup', 'deleted')).length : 0} fișiere în coș`);
+      record('ștergere: evidența coșului este scrisă',
+        existsSync(join(ROOT, 'data', 'deleted-photos.json')));
+
+      await shot(page, 'tools-delete-photo-sters');
+
+      // restaurare din interfață
+      await page.click('#trashList .restore');
+      await page.waitForFunction(
+        () => document.querySelectorAll('#trashList .restore').length === 0,
+        { timeout: 240000 }
+      );
+      await wait(500);
+
+      const afterRestore = await page.evaluate(() => ({
+        cards: document.querySelectorAll('#photoGrid .pcard').length,
+        trash: document.getElementById('trashList').textContent.replace(/\s+/g, ' ').slice(0, 60),
+        toast: document.getElementById('toast').textContent.replace(/\s+/g, ' ').slice(0, 120)
+      }));
+      record('restaurare: fotografia revine în grilă', afterRestore.cards === catalogBefore.count,
+        `${afterRestore.cards} carduri`);
+      record('restaurare: coșul este din nou gol', /Coșul este gol/.test(afterRestore.trash),
+        afterRestore.toast);
+
+      const catalogAfterRestore = JSON.parse(readFileSync(join(ROOT, 'data', 'photos.json'), 'utf8'));
+      record('restaurare: catalogul revine exact la starea inițială',
+        catalogAfterRestore.count === catalogBefore.count
+        && catalogAfterRestore.photos.some((p) => p.id === lastPhoto.id),
+        `count=${catalogAfterRestore.count}`);
+      record('restaurare: pagina foto este regenerată',
+        existsSync(join(ROOT, 'foto', lastPhoto.slug + '.html')));
+      record('restaurare: coșul de pe disc este gol',
+        !existsSync(join(ROOT, 'backup', 'deleted'))
+        || readdirSync(join(ROOT, 'backup', 'deleted')).length === 0);
+
+
     } finally {
       // curățăm, ca starea catalogului să rămână neatinsă
       const cleared = await postCoords([{ id: target.id, latitude: '', longitude: '' }]);

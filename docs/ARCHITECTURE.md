@@ -22,7 +22,7 @@ assets/img/thumbs/*.webp · assets/img/previews/*.webp · data/media.json
         │  tools/build.js
         ▼
 index.html · arhiva.html · harta.html · despre.html · 404.html
-foto/<slug>.html × 257 · sitemap.xml · robots.txt · data/site-stats.json
+foto/<slug>.html × N · sitemap.xml · robots.txt · data/site-stats.json
         │  tools/validate.js · tools/reconcile.js · tools/test.js · tools/browser-check.js
         ▼
 docs/RECONCILIATION.md · docs/BROWSER-REPORT.md · docs/screenshots/
@@ -98,6 +98,14 @@ Fișier de configurare (nu generat) cu imaginea de header a paginii principale:
 `hero.image`, `hero.photoSlug`, `hero.title`, `hero.yearLabel`, `hero.alt`.
 Nu este suprascris de build, deci modificările persistă. Vezi
 [`docs/MIGRATION.md`](MIGRATION.md), secțiunea 6.
+
+### 4.5 Coșul de reciclare (`data/deleted-photos.json`)
+Evidența fotografiilor șterse, scrisă de unealta de ștergere. Fiecare intrare păstrează
+obiectul complet al fotografiei, lista fișierelor mutate (`from` → `to`) și varianta din
+`media.json`, exact ca restaurarea să fie identică (verificat bit-cu-bit în
+`npm run test-trash`). Fișierul nu este generat de build, nu este publicat
+(exclus în `_config.yml`) și nu blochează `npm run extract`: fotografiile din coș
+**nu sunt readuse** în catalog la re-extracție. Vezi [`docs/STERGERE.md`](STERGERE.md).
 
 ## 5. Căutare și filtre (fără backend)
 
@@ -194,9 +202,24 @@ Nu există scripturi de analiză, tracking, cookie-uri sau fonturi terțe.
 
 - servește fișierele statice cu `Cache-Control: no-store` pentru HTML/JSON/JS/CSS
   (evită răspunsurile `304` cu versiuni vechi);
-- expune endpoint-urile `POST /api/coords`, `POST /api/photos`, `POST /api/hero` și
-  `GET /api/hero/options`, care permit uneltelor din `tools/` să scrie **direct** în
-  `data/*.json` — fără export/import manual.
+- expune endpoint-urile `POST /api/coords`, `POST /api/photos`, `GET /api/photos/list`,
+  `POST /api/photos/delete`, `POST /api/photos/restore`, `POST /api/photos/purge`,
+  `POST /api/hero` și `GET /api/hero/options`, care permit uneltelor din `tools/` să scrie
+  **direct** în `data/*.json` — fără export/import manual.
+
+Cele trei unelte de administrare a arhivei:
+
+| Unealtă | Rol |
+|---|---|
+| `tools/add-photo.html` | adaugă o fotografie (upload + metadate + poziție pe hartă) |
+| `tools/coords-editor.html` | pune/ajustează coordonatele fiecărei fotografii |
+| `tools/delete-photo.html` | șterge o fotografie — **reversibil**, prin coșul de reciclare |
+
+Ștergerea este **singura operație care modifică structura arhivei**, de aceea este
+implementată ca mutare de fișiere în `backup/deleted/`, cu metadate complete păstrate în
+`data/deleted-photos.json`. Nu există ștergere definitivă decât prin acțiune explicită
+(„Golește coșul"), iar `npm run extract` ignoră fotografiile din coș. Detalii:
+[`docs/STERGERE.md`](STERGERE.md).
 
 Site-ul publicat pe GitHub Pages **nu depinde** de acest server: este 100% static, iar
 endpoint-urile de scriere nu există în producție.
@@ -239,8 +262,11 @@ verificat automat în `tools/test.js` („paginile publice nu conțin referințe
   catalog; restul apar la nivel de localitate sau în lista explicativă de sub hartă.
   Coordonatele nu sunt generate automat (vezi [`COORDONATE.md`](COORDONATE.md)).
 - Formularul de contact depinde de serviciul extern preexistent (formcarry.com).
-- `Original/` este publicat alături de site și blocat în `robots.txt`; poate fi
-  exclus la publicare dacă se dorește.
-- `tools/coords-editor.html` este o unealtă locală de lucru; poate fi ștearsă înainte
-  de publicare dacă nu doriți să fie accesibilă (este oricum blocată în `robots.txt`).
+- Uneltele din `tools/` sunt locale și **nu se publică** (vezi secțiunea 8). Dacă publicați
+  prin altă metodă decât „Deploy from a branch" (deci fără Jekyll/`_config.yml`), verificați
+  manual că `/tools/` nu ajunge online; garda din pagină și `robots.txt` rămân active.
+- **Ștergerea unei fotografii din arhiva originală** reduce numărul de intrări față de
+  snapshot-ul legacy, deci `npm run reconcile` va semnala diferența. Este un comportament
+  intenționat (ștergerea e o decizie editorială, luată explicit de proprietar), nu o
+  pierdere de date: fotografia rămâne în coșul `backup/deleted/` și poate fi restaurată.
 

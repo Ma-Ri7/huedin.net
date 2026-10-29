@@ -3,8 +3,8 @@
  * între linia de comandă (tools/add-photo.js) și serverul de dezvoltare
  * (tools/serve.js, folosit de pagina tools/add-photo.html).
  */
-import { existsSync } from 'node:fs';
-import { join, extname } from 'node:path';
+import { existsSync, renameSync, mkdirSync, rmSync, readFileSync as readFs, writeFileSync as writeFs } from 'node:fs';
+import { join, extname, dirname as dirOf } from 'node:path';
 import { slugify, parseYear } from '../../assets/js/search-core.js';
 
 export const FILTER_TO_PERIOD = {
@@ -165,5 +165,176 @@ export function appendPhoto(catalog, locationsData, entry) {
     if (loc && !loc.photoIds.includes(entry.id)) loc.photoIds.push(entry.id);
   }
   return entry;
+}
+
+
+/* ==========================================================================
+ * Ștergere reversibilă (coș de reciclare)
+ *
+ * Fișierele NU sunt distruse: sunt mutate în `backup/deleted/`, iar metadatele
+ * sunt păstrate în `data/deleted-photos.json`. Fotografia poate fi restaurată
+ * identic. Este singura metodă de ștergere expusă în unelte, ca să nu existe
+ * pierderi de conținut.
+ * ========================================================================== */
+
+export const TRASH_FILE = 'data/deleted-photos.json';
+export const TRASH_DIR = 'backup/deleted';
+
+function readJsonFile(root, rel) {
+  return JSON.parse(readFs(join(root, rel), 'utf8'));
+}
+
+function writeJsonFile(root, rel, data) {
+  writeFs(join(root, rel), JSON.stringify(data, null, 1) + '\n');
+}
+
+export function loadTrash(root) {
+  try {
+    return readJsonFile(root, TRASH_FILE);
+  } catch (e) {
+    return { note: 'Fotografii șterse (mutate în backup/deleted). Pot fi restaurate.', deleted: [] };
+  }
+}
+
+export function saveTrash(root, trash) {
+  writeJsonFile(root, TRASH_FILE, trash);
+}
+
+/** ID-urile șterse — folosite de extract.js ca să nu le readucă în catalog. */
+export function deletedIds(root) {
+  return new Set(loadTrash(root).deleted.map((d) => d.photo.id));
+}
+
+function moveToTrash(root, rel) {
+  if (!rel) return null;
+  const abs = join(root, rel);
+  if (!existsSync(abs)) return null;
+  const name = rel.split('/').pop();
+  mkdirSync(join(root, TRASH_DIR), { recursive: true });
+  let final = join(root, TRASH_DIR, name);
+  let n = 1;
+  while (existsSync(final)) {           // nu suprascriem nimic din coș
+    n++;
+    final = join(root, TRASH_DIR, name.replace(/(\.[^.]+)$/, '-' + n + '$1'));
+  }
+  renameSync(abs, final);
+  return { from: rel, to: TRASH_DIR + '/' + final.split('/').pop() };
+}
+
+function recount(catalog) {
+  catalog.count = catalog.photos.length;
+  catalog.manualCount = catalog.photos.filter((p) => p.origin === 'manual').length;
+  catalog.legacyCount = catalog.photos.filter((p) => p.origin !== 'manual').length;
+  return catalog;
+}
+
+/**
+ * Șterge (reversibil) o fotografie: o scoate din catalog, din locație și din
+ * media.json, apoi mută toate fișierele ei în coș (`backup/deleted/`).
+ * @returns {{photo:object, moved:Array<{from:string,to:string}>}}
+ */
+export function softDeletePhoto(root, id) {
+  const catalog = readJsonFile(root, 'data/photos.json');
+  const locationsData = readJsonFile(root, 'data/locations.json');
+  const trash = loadTrash(root);
+
+  const index = catalog.photos.findIndex((p) => p.id === id);
+  if (index === -1) throw new Error('fotografia nu există: ' + id);
+  const photo = catalog.photos[index];
+
+  const moved = [];
+  for (const rel of [
+    photo.image,
+    photo.originalImage,
+    'assets/img/thumbs/' + photo.id + '.webp',
+    'assets/img/previews/' + photo.id + '.webp',
+    'foto/' + photo.slug + '.html'
+  ]) {
+    const m = moveToTrash(root, rel);
+    if (m) moved.push(m);
+  }
+
+  catalog.photos.splice(index, 1);
+  writeJsonFile(root, 'data/photos.json', recount(catalog));
+
+  for (const loc of locationsData.locations) {
+    loc.photoIds = loc.photoIds.filter((x) => x !== id);
+  }
+  writeJsonFile(root, 'data/locations.json', locationsData);
+
+  let mediaVariant = null;
+  try {
+    const media = readJsonFile(root, 'data/media.json');
+    mediaVariant = media.variants[id] || null;
+    delete media.variants[id];
+    writeJsonFile(root, 'data/media.json', media);
+  } catch (e) { /* media.json lipsă: ignorăm */ }
+
+  trash.deleted = trash.deleted.filter((d) => d.photo.id !== id);
+  trash.deleted.push({ deletedAt: new Date().toISOString(), photo, moved, media: mediaVariant });
+  saveTrash(root, trash);
+
+  return { photo, moved };
+}
+
+
+/**
+ * Restaurează o fotografie din coș: pune fișierele la locul lor, o readuce în
+ * catalog, în locație și în media.json.
+ * @returns {{photo:object, restored:string[]}}
+ */
+export function restorePhoto(root, id) {
+  const catalog = readJsonFile(root, 'data/photos.json');
+  const locationsData = readJsonFile(root, 'data/locations.json');
+  const trash = loadTrash(root);
+
+  const entry = trash.deleted.find((d) => d.photo.id === id);
+  if (!entry) throw new Error('fotografia nu este în coș: ' + id);
+  if (catalog.photos.some((p) => p.id === id)) {
+    throw new Error('există deja o fotografie cu acest id în catalog: ' + id);
+  }
+
+  const restored = [];
+  for (const m of entry.moved) {
+    const from = join(root, m.to);
+    const to = join(root, m.from);
+    if (!existsSync(from)) continue;
+    mkdirSync(dirOf(to), { recursive: true });
+    renameSync(from, to);
+    restored.push(m.from);
+  }
+
+  catalog.photos.push(entry.photo);
+  catalog.photos.sort((a, b) => (a.legacyIndex ?? 1e9) - (b.legacyIndex ?? 1e9));
+  writeJsonFile(root, 'data/photos.json', recount(catalog));
+
+  if (entry.photo.locationId) {
+    const loc = locationsData.locations.find((l) => l.id === entry.photo.locationId);
+    if (loc && !loc.photoIds.includes(id)) loc.photoIds.push(id);
+  }
+  writeJsonFile(root, 'data/locations.json', locationsData);
+
+  try {
+    const media = readJsonFile(root, 'data/media.json');
+    if (entry.media) media.variants[id] = entry.media;
+    writeJsonFile(root, 'data/media.json', media);
+  } catch (e) { /* media.json lipsă: îl regenerăm la build */ }
+
+  trash.deleted = trash.deleted.filter((d) => d.photo.id !== id);
+  saveTrash(root, trash);
+
+  return { photo: entry.photo, restored };
+}
+
+/** Golește coșul — ștergere DEFINITIVĂ. Doar la cerere explicită. */
+export function purgeTrash(root) {
+  const trash = loadTrash(root);
+  const n = trash.deleted.length;
+  for (const entry of trash.deleted) {
+    for (const m of entry.moved) rmSync(join(root, m.to), { force: true });
+  }
+  trash.deleted = [];
+  saveTrash(root, trash);
+  return n;
 }
 

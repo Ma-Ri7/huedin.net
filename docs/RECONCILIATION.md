@@ -1,6 +1,6 @@
 # Raport de reconciliere — legacy vs. arhivă nouă
 
-Generat: 2026-10-28 · sursă legacy: `backup/legacy-index.html` (198462 octeți)
+Generat: 2026-10-29 · sursă legacy: `backup/legacy-index.html` (198462 octeți)
 
 ## Rezumat
 

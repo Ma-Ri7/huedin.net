@@ -33,10 +33,10 @@
    "source": "",
    "credits": "",
    "tags": [],
-   "latitude": 46.864074,
-   "longitude": 23.025737,
-   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
-   "coordinateCertainty": "approximate",
+   "latitude": null,
+   "longitude": null,
+   "coordinateSource": null,
+   "coordinateCertainty": null,
    "origin": "legacy"
   },
   {
@@ -9006,7 +9006,7 @@
    "title": "Decembrie 89",
    "alt": "Revoluția din Decembrie 1989",
    "image": "assets/img/portfolio/decembrie-89-1989.webp",
-   "originalImage": null,
+   "originalImage": "assets/img/portfolio/decembrie-89-1989.jpg",
    "lightboxImage": null,
    "lightboxBroken": false,
    "year": 1989,
@@ -9024,17 +9024,18 @@
    "locationId": "huedin",
    "locationName": "Huedin",
    "locationNote": null,
-   "latitude": 46.86453,
-   "longitude": 23.025407,
+   "latitude": 46.864547,
+   "longitude": 23.025433,
    "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
    "coordinateCertainty": "exact",
-   "description": "Imagini de la  Revoluția din Decembrie 1989",
-   "source": "",
+   "description": "Revoluția din Decembrie 1989 - Balconul Primăriei Huedin",
+   "source": "Huedinul, o localitate pe drumul spre Europa – aspecte monografice",
    "credits": "",
    "tags": [
     "revoluție",
     "decembrie",
-    "1989"
+    "1989",
+    "balconul primariei"
    ],
    "origin": "manual"
   }

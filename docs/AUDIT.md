@@ -65,7 +65,14 @@ noua pagină principală, pentru ca legăturile existente să funcționeze în c
 | # | Risc | Detaliu | Tratare |
 |---|---|---|---|
 | R1 | Referință imagine ruptă | `277532475_..._nn.webp` (typo, fotografia p143 „Strada Poștei”) | Păstrată în catalog ca informație; noul site folosește fișierul corect existent |
-| R2 | Fără Git | imposibil rollback prin VCS | Snapshot `backup/legacy-index.html` (SHA-256 identic cu originalul) + folderul `Original/` intact |
+| R2 | Fără Git | imposibil rollback prin VCS | Snapshot `backup/legacy-index.html` (SHA-256 identic cu originalul) + activele legacy păstrate în `assets/` |
+
+> **Notă (actualizare ulterioară):** la momentul auditului, site-ul legacy complet a fost
+> păstrat într-un folder `Original/`. Între timp acel folder a fost eliminat de proprietar,
+> iar metoda de revenire se bazează acum pe `backup/legacy-index.html` + activele legacy
+> din `assets/` — verificată: 276 din 277 de referințe legacy există (singura lipsă este
+> referința ruptă R1, care exista deja în original). Vezi
+> [`MIGRATION.md`](MIGRATION.md), secțiunea 9.
 | R3 | Fără coordonate geografice | nicio informație lat/lon în date | Hartă cu **1 singură locație verificată** (Huedin, coordonate preluate din embed-ul Google Maps al site-ului original); celelalte 8 localități listate fără pin |
 | R4 | Metadate de an neuniforme | 67 de formate | Model de date care separă an exact / interval / deceniu / perioadă denumită / text liber; `yearText` păstrat verbatim |
 | R5 | URL-uri indexate | doar `/` + 5 ancore | Ancore păstrate identic pe pagina nouă; sitemap + canonical adăugate |
@@ -76,9 +83,10 @@ noua pagină principală, pentru ca legăturile existente să funcționeze în c
 
 1. `backup/legacy-index.html` — copie bit-cu-bit a `index.html` original
    (SHA-256 `8c36bbe3eb247b28601b18708ed067a821b95d7f`).
-2. `Original/` — site-ul legacy complet (HTML + CSS + JS + imagini + CNAME), neatins.
-3. Revenire completă: copierea `Original/index.html` + `Original/assets` peste
-   rădăcină. Nimic din conținutul original nu a fost șters sau mutat distructiv.
+2. `assets/` — toate activele legacy (CSS, JS, vendor, imaginile), păstrate fidel.
+3. Revenire completă: `cp backup/legacy-index.html index.html` + `cp backup/CNAME .`
+   (activele sunt deja în `assets/`). Nimic din conținutul original nu a fost șters
+   sau mutat distructiv. Procedura detaliată: [`MIGRATION.md`](MIGRATION.md), secțiunea 9.
 
 ## 5. Riscuri de migrare rămase
 

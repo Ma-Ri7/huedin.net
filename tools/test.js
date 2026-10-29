@@ -6,10 +6,11 @@
  *  C. Integritatea paginilor HTML generate (structură, linkuri, imagini)
  *  D. Sitemap / robots
  *  E. Verificarea linkurilor interne
+ *  F. Ștergere reversibilă (coș de reciclare)
  *
  * Iese cu cod 1 dacă vreun test eșuează.
  */
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -450,25 +451,84 @@ t('miniaturile și preview-urile există pentru toate fotografiile', () => {
   eq(missing, []);
 });
 
-t('copia din assets/img/portfolio păstrează fidel fișierele din Original/', () => {
-  // Originalul trebuie să rămână neatins, iar copia publicată identică bit-cu-bit.
-  // Fișierele noi (fotografii adăugate ulterior) sunt permise.
-  const originalDir = join(ROOT, 'Original', 'assets', 'img', 'portfolio');
-  if (!existsSync(originalDir)) return;
-  const assetsDir = join(ROOT, 'assets', 'img', 'portfolio');
-  const problems = [];
-  for (const f of readdirSync(originalDir)) {
-    const a = join(originalDir, f);
-    const b = join(assetsDir, f);
-    if (!existsSync(b)) { problems.push(f + ': lipsește din assets'); continue; }
-    if (statSync(a).size !== statSync(b).size) problems.push(f + ': dimensiune diferită');
-  }
-  eq(problems, []);
+t('revenirea la site-ul original este posibilă (snapshot + activele legacy)', () => {
+  // Pagina legacy trebuie să existe ca snapshot și toate activele pe care le referă
+  // să fie prezente, altfel revenirea ar produce un site incomplet.
+  const legacy = join(ROOT, 'backup', 'legacy-index.html');
+  ok(existsSync(legacy), 'lipsește backup/legacy-index.html (snapshot-ul de revenire)');
+
+  const html = readFileSync(legacy, 'utf8');
+  const refs = new Set();
+  for (const m of html.matchAll(/(?:src|href)="(assets\/[^"]+)"/g)) refs.add(m[1]);
+  ok(refs.size > 200, 'snapshot-ul legacy referă prea puține active: ' + refs.size);
+
+  // referința ruptă cunoscută din original (nu e o pierdere de migrare)
+  const knownBroken = 'assets/img/portfolio/277532475_133573735898323_1022537192671561500_nn.webp';
+  const missing = [...refs].filter((r) => !existsSync(join(ROOT, r)) && r !== knownBroken);
+  eq(missing, []);
+
+  // CNAME-ul de revenire
+  ok(existsSync(join(ROOT, 'backup', 'CNAME')), 'lipsește backup/CNAME');
 });
 
 t('directorul foto/ conține exact o pagină per fotografie', () => {
   const files = readdirSync(join(ROOT, 'foto')).filter((f) => f.endsWith('.html'));
   eq(files.length, photos.length);
+});
+
+/* ===================== F. Ștergere reversibilă (coș) ===================== */
+group('F. Ștergere reversibilă (coș de reciclare)');
+
+t('pagina uneltei de ștergere există și este protejată local', () => {
+  const page = join(ROOT, 'tools', 'delete-photo.html');
+  ok(existsSync(page), 'lipsește tools/delete-photo.html');
+  const html = readFileSync(page, 'utf8');
+  ok(html.includes('local-guard.js'), 'pagina nu include garda locală');
+  ok(html.includes('/api/photos/delete'), 'pagina nu apelează endpoint-ul de ștergere');
+  ok(html.includes('/api/photos/restore'), 'pagina nu apelează endpoint-ul de restaurare');
+  ok(html.includes('noindex'), 'pagina nu este marcată noindex');
+});
+
+t('coșul de reciclare este exclus de la publicare', () => {
+  const cfg = readFileSync(join(ROOT, '_config.yml'), 'utf8');
+  ok(cfg.includes('data/deleted-photos.json'), '_config.yml nu exclude evidența coșului');
+  ok(cfg.includes('backup'), '_config.yml nu exclude directorul backup/ (unde stă coșul)');
+  const ignore = readFileSync(join(ROOT, '.gitignore'), 'utf8');
+  ok(ignore.includes('backup/deleted/'), '.gitignore nu ignoră backup/deleted/');
+});
+
+t('funcțiile de ștergere/restaurare sunt exportate din bibliotecă', () => {
+  const lib = readFileSync(join(ROOT, 'tools', 'lib', 'photos.js'), 'utf8');
+  for (const fn of ['softDeletePhoto', 'restorePhoto', 'purgeTrash', 'loadTrash', 'deletedIds']) {
+    ok(lib.includes('export function ' + fn), 'lipsește exportul ' + fn);
+  }
+  // ștergerea mută fișierele, nu le distruge
+  ok(lib.includes('renameSync'), 'ștergerea nu mută fișierele (ar fi distructivă)');
+  ok(!/rmSync\(join\(root, m\.from\)/.test(lib), 'restaurarea nu trebuie să șteargă sursa');
+});
+
+t('extract.js nu readuce în catalog fotografiile șterse', () => {
+  const src = readFileSync(join(ROOT, 'tools', 'extract.js'), 'utf8');
+  ok(src.includes('deletedIds'), 'extract.js nu filtrează fotografiile șterse');
+  ok(/legacyPhotos/.test(src), 'extract.js nu aplică filtrarea pe fotografiile legacy');
+});
+
+t('evidența coșului (dacă există) are forma corectă', () => {
+  const file = join(ROOT, 'data', 'deleted-photos.json');
+  if (!existsSync(file)) return;
+  const trash = JSON.parse(readFileSync(file, 'utf8'));
+  ok(Array.isArray(trash.deleted), 'câmpul „deleted” trebuie să fie listă');
+  for (const entry of trash.deleted) {
+    ok(entry.photo && entry.photo.id, 'intrare fără fotografie în coș');
+    ok(Array.isArray(entry.moved), 'intrare fără lista de fișiere mutate');
+    for (const m of entry.moved) {
+      ok(m.from && m.to, 'fișier mutat fără „from”/„to”');
+      ok(m.to.startsWith('backup/deleted/'), 'fișierul mutat nu este în backup/deleted/: ' + m.to);
+    }
+    // o fotografie aflată în coș NU trebuie să mai existe în catalog
+    ok(!photos.some((p) => p.id === entry.photo.id),
+      'fotografia ' + entry.photo.id + ' este și în coș, și în catalog');
+  }
 });
 
 /* ================================ Rezumat ================================ */

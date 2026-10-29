@@ -12,6 +12,7 @@ Nu există bază de date: site-ul citește aceste fișiere JSON direct în brows
 | `media.json` | `tools/thumbs.js` | nu |
 | `site-stats.json` | `tools/build.js` | nu |
 | `legacy-inventory.json` | `tools/extract.js` | nu (folosit la reconciliere) |
+| `deleted-photos.json` | `tools/delete-photo.html` (prin server) | nu (coșul de reciclare; exclus de la publicare) |
 
 ## Reguli
 
@@ -29,6 +30,10 @@ Nu există bază de date: site-ul citește aceste fișiere JSON direct în brows
    `tools/coords-editor.html` (vezi [`docs/COORDONATE.md`](../docs/COORDONATE.md)).
    Coordonatele **nu se completează niciodată fără `coordinateSource`** și sunt păstrate
    automat la re-extracție.
+8. Pentru ștergerea unei fotografii folosiți `tools/delete-photo.html`
+   (vezi [`docs/STERGERE.md`](../docs/STERGERE.md)). Ștergerea este **reversibilă**:
+   fișierele se mută în `backup/deleted/`, iar evidența rămâne în `deleted-photos.json`.
+   `npm run extract` **nu** readuce în catalog fotografiile aflate în coș.
 
 ## Scheme
 

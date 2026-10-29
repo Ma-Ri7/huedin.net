@@ -5,7 +5,7 @@
  *         foto/<slug>.html (257 pagini), sitemap.xml, robots.txt,
  *         data/site-stats.json
  *
- * Fără dependențe externe. Nu modifică imaginile și nu șterge nimic din `Original/`.
+ * Fără dependențe externe. Nu modifică imaginile originale și nu șterge nimic din `backup/`.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';

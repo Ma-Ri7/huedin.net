@@ -1,11 +1,18 @@
 /**
- * tools/serve.js — server static local pentru dezvoltare, cu un singur endpoint:
+ * tools/serve.js — server static local pentru dezvoltare, cu endpoint-uri JSON:
  *
- *   GET  /api/status   -> starea catalogului (câte fotografii au coordonate)
- *   POST /api/coords   -> salvează coordonatele direct în data/photos.json
+ *   GET  /api/status          -> starea catalogului (câte fotografii au coordonate)
+ *   POST /api/coords          -> salvează coordonatele direct în data/photos.json
+ *   POST /api/photos          -> fotografie nouă (imagine + metadate)
+ *   GET  /api/photos/list     -> lista fotografiilor + conținutul coșului de reciclare
+ *   POST /api/photos/delete   -> ștergere reversibilă (mută fotografia în coș)
+ *   POST /api/photos/restore  -> readuce o fotografie din coș
+ *   POST /api/photos/purge    -> golește coșul (ștergere definitivă)
+ *   GET/POST /api/hero        -> imaginea de header
+ *   GET  /api/hero/options    -> imagini disponibile pentru header
  *
- * Endpoint-ul permite editorului vizual (tools/coords-editor.html) să scrie
- * coordonatele într-un singur click, fără export/import manual.
+ * Endpoint-urile permit uneltelor locale (tools/*.html) să scrie direct în
+ * catalog, fără export/import manual.
  *
  * Servește fișierele cu `Cache-Control: no-store` pentru HTML/JSON/JS/CSS,
  * ca browserul să vadă imediat modificările (evită răspunsurile 304 învechite).
@@ -21,7 +28,7 @@ import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { applyRecords, coordsSummary } from './lib/coords.js';
-import { buildEntry, appendPhoto, safeFileName } from './lib/photos.js';
+import { buildEntry, appendPhoto, safeFileName, loadTrash, softDeletePhoto, restorePhoto, purgeTrash } from './lib/photos.js';
 import { generateVariants, ensurePreview } from './lib/thumbs.js';
 import { loadSiteConfig, saveSiteConfig, resolveHero } from './lib/site-config.js';
 
@@ -383,6 +390,138 @@ export function createStaticServer(options) {
         for (const rel of written) {
           try { rmSync(join(ROOT, rel), { force: true }); } catch (err) { /* ignorăm */ }
         }
+        json(res, 400, { ok: false, error: String(e.message || e) });
+      }
+      return;
+    }
+
+    /* ---------- GET /api/photos/list (lista pentru pagina de ștergere) ---------- */
+    if (pathname === '/api/photos/list') {
+      const catalog = loadCatalog();
+      const locations = JSON.parse(readFileSync(join(ROOT, 'data', 'locations.json'), 'utf8')).locations;
+      const locName = new Map(locations.map((l) => [l.id, l.name]));
+
+      let media = { variants: {} };
+      try {
+        media = JSON.parse(readFileSync(join(ROOT, 'data', 'media.json'), 'utf8'));
+      } catch (e) { /* opțional */ }
+
+      const variantOf = (id) => media.variants[id] || {};
+      const photos = catalog.photos.map((p) => {
+        const v = variantOf(p.id);
+        return {
+          id: p.id,
+          slug: p.slug,
+          title: p.title,
+          yearLabel: p.yearLabel,
+          yearText: p.yearText,
+          origin: p.origin || 'legacy',
+          hasCoords: p.latitude !== null && p.latitude !== undefined,
+          location: locName.get(p.locationId) || null,
+          image: p.image,
+          thumb: (v.thumb && v.thumb.path) || (existsSync(join(ROOT, 'assets', 'img', 'thumbs', p.id + '.webp'))
+            ? 'assets/img/thumbs/' + p.id + '.webp' : null)
+        };
+      });
+
+      const trash = loadTrash(ROOT);
+      json(res, 200, {
+        ok: true,
+        count: photos.length,
+        photos,
+        deleted: trash.deleted.map((d) => ({
+          id: d.photo.id,
+          slug: d.photo.slug,
+          title: d.photo.title,
+          yearLabel: d.photo.yearLabel,
+          origin: d.photo.origin || 'legacy',
+          deletedAt: d.deletedAt,
+          files: d.moved.map((m) => m.to)
+        }))
+      });
+      return;
+    }
+
+    /* ---------- POST /api/photos/delete (ștergere reversibilă) ---------- */
+    if (pathname === '/api/photos/delete') {
+      if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'folosiți POST' }); return; }
+      try {
+        const body = JSON.parse(await readBody(req));
+        const id = String(body.id || '').trim();
+        if (!id) { json(res, 400, { ok: false, error: 'lipsește identificatorul fotografiei' }); return; }
+
+        const result = softDeletePhoto(ROOT, id);
+
+        let rebuild = { ok: false, skipped: true };
+        if (body.rebuild !== false) rebuild = await rebuildSite();
+
+        console.log('  ștearsă (în coș): ' + result.photo.id + ' — „' + result.photo.title + '”'
+          + ' [' + result.moved.length + ' fișiere]'
+          + (rebuild.ok ? '; regenerat ' + (rebuild.pages || '?') + ' pagini' : ''));
+
+        json(res, 200, {
+          ok: true,
+          deleted: {
+            id: result.photo.id,
+            slug: result.photo.slug,
+            title: result.photo.title,
+            origin: result.photo.origin || 'legacy',
+            files: result.moved.map((m) => m.to)
+          },
+          count: loadCatalog().photos.length,
+          rebuild,
+          message: 'Fotografia „' + result.photo.title + '” a fost mutată în coș (backup/deleted). '
+            + 'Poate fi restaurată oricând din această pagină.'
+        });
+      } catch (e) {
+        json(res, 400, { ok: false, error: String(e.message || e) });
+      }
+      return;
+    }
+
+    /* ---------- POST /api/photos/restore (readuce din coș) ---------- */
+    if (pathname === '/api/photos/restore') {
+      if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'folosiți POST' }); return; }
+      try {
+        const body = JSON.parse(await readBody(req));
+        const id = String(body.id || '').trim();
+        if (!id) { json(res, 400, { ok: false, error: 'lipsește identificatorul fotografiei' }); return; }
+
+        const result = restorePhoto(ROOT, id);
+
+        let rebuild = { ok: false, skipped: true };
+        if (body.rebuild !== false) rebuild = await rebuildSite();
+
+        console.log('  restaurată: ' + result.photo.id + ' — „' + result.photo.title + '”'
+          + ' [' + result.restored.length + ' fișiere]'
+          + (rebuild.ok ? '; regenerat ' + (rebuild.pages || '?') + ' pagini' : ''));
+
+        json(res, 200, {
+          ok: true,
+          restored: { id: result.photo.id, slug: result.photo.slug, title: result.photo.title },
+          count: loadCatalog().photos.length,
+          rebuild,
+          message: 'Fotografia „' + result.photo.title + '” a fost restaurată în arhivă.'
+        });
+      } catch (e) {
+        json(res, 400, { ok: false, error: String(e.message || e) });
+      }
+      return;
+    }
+
+    /* ---------- POST /api/photos/purge (golește coșul — definitiv) ---------- */
+    if (pathname === '/api/photos/purge') {
+      if (req.method !== 'POST') { json(res, 405, { ok: false, error: 'folosiți POST' }); return; }
+      try {
+        const body = JSON.parse(await readBody(req));
+        if (body.confirm !== true) {
+          json(res, 400, { ok: false, error: 'operație definitivă: trimiteți { "confirm": true }' });
+          return;
+        }
+        const n = purgeTrash(ROOT);
+        console.log('  coș golit definitiv: ' + n + ' fotografii');
+        json(res, 200, { ok: true, purged: n, message: n + ' fotografii au fost șterse definitiv din coș.' });
+      } catch (e) {
         json(res, 400, { ok: false, error: String(e.message || e) });
       }
       return;
