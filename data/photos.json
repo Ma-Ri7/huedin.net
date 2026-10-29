@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 258,
+ "count": 259,
  "legacyCount": 257,
- "manualCount": 1,
+ "manualCount": 2,
  "photos": [
   {
    "id": "p001",
@@ -9036,6 +9036,47 @@
     "decembrie",
     "1989",
     "balconul primariei"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p259",
+   "legacyIndex": 100001,
+   "slug": "centrul-orasului-huedin-anii-80",
+   "title": "Centrul orașului Huedin - anii '80",
+   "alt": "Centrul orasului Huedin - anii '80",
+   "image": "assets/img/portfolio/centrul-orasului-huedin-anii-80-anii-80.webp",
+   "originalImage": "assets/img/portfolio/centrul-orasului-huedin-anii-80-anii-80.jpeg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": null,
+   "yearStart": 1980,
+   "yearEnd": 1989,
+   "yearApprox": false,
+   "yearLabel": "anii '80",
+   "yearText": "anii '80",
+   "precision": "decade",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": "anii '80",
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.864593,
+   "longitude": 23.026488,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "exact",
+   "description": "Centrul orasului Huedin - anii '80",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "Centru",
+    "Huedin",
+    "Alimentara",
+    "Autoservire",
+    "Magazin"
    ],
    "origin": "manual"
   }

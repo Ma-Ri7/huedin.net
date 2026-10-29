@@ -4386,6 +4386,23 @@
     "width": 1400,
     "height": 1051
    }
+  },
+  "p259": {
+   "source": "assets/img/portfolio/centrul-orasului-huedin-anii-80-anii-80.webp",
+   "sourceSize": {
+    "width": 2048,
+    "height": 1344
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p259.webp",
+    "width": 600,
+    "height": 394
+   },
+   "preview": {
+    "path": "assets/img/previews/p259.webp",
+    "width": 1400,
+    "height": 919
+   }
   }
  }
 }
