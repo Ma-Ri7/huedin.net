@@ -33,10 +33,10 @@
    "source": "",
    "credits": "",
    "tags": [],
-   "latitude": null,
-   "longitude": null,
-   "coordinateSource": null,
-   "coordinateCertainty": null,
+   "latitude": 46.864074,
+   "longitude": 23.025737,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
    "origin": "legacy"
   },
   {
