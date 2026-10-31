@@ -4420,6 +4420,23 @@
     "width": 933,
     "height": 1400
    }
+  },
+  "p261": {
+   "source": "assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-1987-1987.webp",
+   "sourceSize": {
+    "width": 1536,
+    "height": 1024
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p261.webp",
+    "width": 600,
+    "height": 400
+   },
+   "preview": {
+    "path": "assets/img/previews/p261.webp",
+    "width": 1400,
+    "height": 933
+   }
   }
  }
 }

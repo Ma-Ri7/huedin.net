@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 260,
+ "count": 261,
  "legacyCount": 257,
- "manualCount": 3,
+ "manualCount": 4,
  "photos": [
   {
    "id": "p001",
@@ -9117,6 +9117,47 @@
     "soldați",
     "parașutiști",
     "1985"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p261",
+   "legacyIndex": 100003,
+   "slug": "cristian-topescu-si-helmuth-duckadam-1987",
+   "title": "Cristian Țopescu și Helmuth Duckadam - 1987",
+   "alt": "Cristian Țopescu și Helmuth Duckadam - 1987",
+   "image": "assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-1987-1987.webp",
+   "originalImage": "assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-1987-1987.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1987,
+   "yearStart": 1987,
+   "yearEnd": 1987,
+   "yearApprox": false,
+   "yearLabel": "1987",
+   "yearText": "1987",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.858516,
+   "longitude": 23.026766,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Cristian Țopescu și Helmuth Duckadam , la meciul amical dintre Vlădeasa Huedin și Steaua București (1987) \n\n✅ Locație : Stadionul orașului Huedin",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "Cristian Țopescu",
+    "Helmuth Duckadam",
+    "fotbal",
+    "Huedin",
+    "Vlădeasa Huedin"
    ],
    "origin": "manual"
   }

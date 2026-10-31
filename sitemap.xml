@@ -2100,4 +2100,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/soldati-ai-um-1049-huedin-parasutisti-1985-1985.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/cristian-topescu-si-helmuth-duckadam-1987.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-1987-1987.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>
