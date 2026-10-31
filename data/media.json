@@ -4403,6 +4403,23 @@
     "width": 1400,
     "height": 919
    }
+  },
+  "p260": {
+   "source": "assets/img/portfolio/soldati-ai-um-1049-huedin-parasutisti-1985-1985.webp",
+   "sourceSize": {
+    "width": 1024,
+    "height": 1536
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p260.webp",
+    "width": 400,
+    "height": 600
+   },
+   "preview": {
+    "path": "assets/img/previews/p260.webp",
+    "width": 933,
+    "height": 1400
+   }
   }
  }
 }

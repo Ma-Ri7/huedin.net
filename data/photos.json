@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 259,
+ "count": 260,
  "legacyCount": 257,
- "manualCount": 2,
+ "manualCount": 3,
  "photos": [
   {
    "id": "p001",
@@ -33,10 +33,10 @@
    "source": "",
    "credits": "",
    "tags": [],
-   "latitude": null,
-   "longitude": null,
-   "coordinateSource": null,
-   "coordinateCertainty": null,
+   "latitude": 46.864072,
+   "longitude": 23.025748,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
    "origin": "legacy"
   },
   {
@@ -9024,8 +9024,8 @@
    "locationId": "huedin",
    "locationName": "Huedin",
    "locationNote": null,
-   "latitude": 46.864547,
-   "longitude": 23.025433,
+   "latitude": 46.86453,
+   "longitude": 23.025407,
    "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
    "coordinateCertainty": "exact",
    "description": "Revoluția din Decembrie 1989 - Balconul Primăriei Huedin",
@@ -9077,6 +9077,46 @@
     "Alimentara",
     "Autoservire",
     "Magazin"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p260",
+   "legacyIndex": 100002,
+   "slug": "soldati-ai-um-1049-huedin-parasutisti-1985",
+   "title": "Soldați ai UM 1049 Huedin (parașutiști) -1985",
+   "alt": "Soldați ai UM 1049 Huedin",
+   "image": "assets/img/portfolio/soldati-ai-um-1049-huedin-parasutisti-1985-1985.webp",
+   "originalImage": "assets/img/portfolio/soldati-ai-um-1049-huedin-parasutisti-1985-1985.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1985,
+   "yearStart": 1985,
+   "yearEnd": 1985,
+   "yearApprox": false,
+   "yearLabel": "1985",
+   "yearText": "1985",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.863754,
+   "longitude": 23.027282,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "exact",
+   "description": "Soldați ai UM 1049 Huedin (parașutiști) -1985",
+   "source": "",
+   "credits": "foto: Marin Marian",
+   "tags": [
+    "Huedin",
+    "soldați",
+    "parașutiști",
+    "1985"
    ],
    "origin": "manual"
   }
