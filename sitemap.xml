@@ -2108,4 +2108,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/soldati-ai-um-01049-huedin-grupul-nr-5-cercetare-diversiune-.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/huedin-1940-fabrica-de-palarii.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/huedin-1940-fabrica-de-palarii-1940.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>

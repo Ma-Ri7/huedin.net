@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 261,
+ "count": 262,
  "legacyCount": 257,
- "manualCount": 4,
+ "manualCount": 5,
  "photos": [
   {
    "id": "p001",
@@ -9159,6 +9159,45 @@
     "Huedin",
     "grupul 5",
     "cercetare-diversiune"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p263",
+   "legacyIndex": 100004,
+   "slug": "huedin-1940-fabrica-de-palarii",
+   "title": "Huedin - 1940 ( Fabrica de pălării )",
+   "alt": "Huedin - 1940 ( Fabrica de pălării )",
+   "image": "assets/img/portfolio/huedin-1940-fabrica-de-palarii-1940.webp",
+   "originalImage": "assets/img/portfolio/huedin-1940-fabrica-de-palarii-1940.png",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1940,
+   "yearStart": 1940,
+   "yearEnd": 1940,
+   "yearApprox": false,
+   "yearLabel": "1940",
+   "yearText": "1940",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1930-1960",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.867674,
+   "longitude": 23.028427,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "exact",
+   "description": "Huedin - 1940 ( Fabrica de pălării )",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "fabrica de pășării",
+    "Huedin",
+    "1940"
    ],
    "origin": "manual"
   }

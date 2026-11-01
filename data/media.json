@@ -4437,6 +4437,23 @@
     "width": 933,
     "height": 1400
    }
+  },
+  "p263": {
+   "source": "assets/img/portfolio/huedin-1940-fabrica-de-palarii-1940.webp",
+   "sourceSize": {
+    "width": 1281,
+    "height": 1227
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p263.webp",
+    "width": 600,
+    "height": 575
+   },
+   "preview": {
+    "path": "assets/img/previews/p263.webp",
+    "width": 1281,
+    "height": 1227
+   }
   }
  }
 }
