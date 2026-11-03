@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 262,
+ "count": 263,
  "legacyCount": 257,
- "manualCount": 5,
+ "manualCount": 6,
  "photos": [
   {
    "id": "p001",
@@ -9199,6 +9199,41 @@
     "Huedin",
     "1940"
    ],
+   "origin": "manual"
+  },
+  {
+   "id": "p264",
+   "legacyIndex": 100005,
+   "slug": "huedin-anii-80-11",
+   "title": "Huedin - anii '80",
+   "alt": "Huedin - anii '80",
+   "image": "assets/img/portfolio/huedin-anii-80-huedin-anii-80.webp",
+   "originalImage": "assets/img/portfolio/huedin-anii-80-huedin-anii-80.jpeg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": null,
+   "yearStart": 1980,
+   "yearEnd": 1989,
+   "yearApprox": false,
+   "yearLabel": "anii '80",
+   "yearText": "Huedin - anii '80",
+   "precision": "decade",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": "anii '80",
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.864489,
+   "longitude": 23.025468,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Huedin - anii '80",
+   "source": "",
+   "credits": "",
+   "tags": [],
    "origin": "manual"
   }
  ]

@@ -2116,4 +2116,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/huedin-1940-fabrica-de-palarii-1940.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/huedin-anii-80-11.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/huedin-anii-80-huedin-anii-80.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>

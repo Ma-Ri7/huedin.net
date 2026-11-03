@@ -4454,6 +4454,23 @@
     "width": 1281,
     "height": 1227
    }
+  },
+  "p264": {
+   "source": "assets/img/portfolio/huedin-anii-80-huedin-anii-80.webp",
+   "sourceSize": {
+    "width": 1016,
+    "height": 1548
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p264.webp",
+    "width": 394,
+    "height": 600
+   },
+   "preview": {
+    "path": "assets/img/previews/p264.webp",
+    "width": 919,
+    "height": 1400
+   }
   }
  }
 }
