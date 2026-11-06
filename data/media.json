@@ -4471,6 +4471,23 @@
     "width": 919,
     "height": 1400
    }
+  },
+  "p265": {
+   "source": "assets/img/portfolio/tren-cu-vagon-dimitrov-pe-sectia-nr-311-huedin-calatele-1976.webp",
+   "sourceSize": {
+    "width": 2008,
+    "height": 2060
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p265.webp",
+    "width": 585,
+    "height": 600
+   },
+   "preview": {
+    "path": "assets/img/previews/p265.webp",
+    "width": 1365,
+    "height": 1400
+   }
   }
  }
 }

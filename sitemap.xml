@@ -2124,4 +2124,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/huedin-anii-80-huedin-anii-80.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/tren-cu-vagon-dimitrov-pe-sectia-nr-311-huedin-calatele-1976.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/tren-cu-vagon-dimitrov-pe-sectia-nr-311-huedin-calatele-1976.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>

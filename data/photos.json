@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 263,
+ "count": 264,
  "legacyCount": 257,
- "manualCount": 6,
+ "manualCount": 7,
  "photos": [
   {
    "id": "p001",
@@ -9234,6 +9234,50 @@
    "source": "",
    "credits": "",
    "tags": [],
+   "origin": "manual"
+  },
+  {
+   "id": "p265",
+   "legacyIndex": 100006,
+   "slug": "tren-cu-vagon-dimitrov-pe-sectia-nr-311-huedin-calatele-1976",
+   "title": "Tren cu vagon Dimitrov pe secția nr. 311 (Huedin - Călățele)  -  1976.",
+   "alt": "Tren cu vagon Dimitrov pe secția nr. 311 (Huedin - Călățele)  -  1976.",
+   "image": "assets/img/portfolio/tren-cu-vagon-dimitrov-pe-sectia-nr-311-huedin-calatele-1976.webp",
+   "originalImage": "assets/img/portfolio/tren-cu-vagon-dimitrov-pe-sectia-nr-311-huedin-calatele-1976.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1976,
+   "yearStart": 1976,
+   "yearEnd": 1976,
+   "yearApprox": false,
+   "yearLabel": "1976",
+   "yearText": "1976",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.846869,
+   "longitude": 23.01602,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Linia de cale ferată Huedin - Călățele, nr. 311 în numerotarea CFR, a fost dată în exploatare în anul 1898. Stațiile de pe această linie erau: halta Zamu Bihorului (Sâncraiu) , Călata și Călățele.\nUltimele trenuri au circulat pe această linie în 1997, cu doar un an inainte ca aceasta linie sa împlineasca 100 de ani de la darea in exploatare. Linia a fost dezmembrată complet începând cu anul 2000. În prezent orașul Huedin și comuna Sâncraiu au fost legate între ele de o pistă de biciclete, destinată atât localnicilor, cât și turiștilor care practică cicloturismul",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "tren",
+    "vagon Dimitrov",
+    "Huedin",
+    "Călățele",
+    "Zamu Bihorului",
+    "Sâncraiu",
+    "Călata",
+    "Călățele"
+   ],
    "origin": "manual"
   }
  ]
