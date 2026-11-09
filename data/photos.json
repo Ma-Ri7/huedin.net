@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 264,
+ "count": 265,
  "legacyCount": 257,
- "manualCount": 7,
+ "manualCount": 8,
  "photos": [
   {
    "id": "p001",
@@ -9277,6 +9277,47 @@
     "Sâncraiu",
     "Călata",
     "Călățele"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p266",
+   "legacyIndex": 100007,
+   "slug": "huedin-anii-80-12",
+   "title": "Huedin  - anii '80",
+   "alt": "Huedin  - anii '80 (Piața Republicii 39)",
+   "image": "assets/img/portfolio/huedin-anii-80-anii-80.webp",
+   "originalImage": "assets/img/portfolio/huedin-anii-80-anii-80.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": null,
+   "yearStart": 1980,
+   "yearEnd": 1989,
+   "yearApprox": false,
+   "yearLabel": "anii '80",
+   "yearText": "anii '80",
+   "precision": "decade",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": "anii '80",
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.864008,
+   "longitude": 23.026473,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Huedin  - anii '80 (Piața Republicii 39)",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "Huedin",
+    "Expres",
+    "Republicii 39",
+    "Benzinarie",
+    "Peco"
    ],
    "origin": "manual"
   }
