@@ -2093,14 +2093,6 @@
     </image:image>
   </url>
   <url>
-    <loc>https://huedin.net/foto/cristian-topescu-si-helmuth-duckadam-1987.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.7</priority>
-    <image:image>
-      <image:loc>https://huedin.net/assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-1987-1987.webp</image:loc>
-    </image:image>
-  </url>
-  <url>
     <loc>https://huedin.net/foto/soldati-ai-um-01049-huedin-grupul-nr-5-cercetare-diversiune-1985.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
@@ -2138,6 +2130,14 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://huedin.net/assets/img/portfolio/huedin-anii-80-anii-80.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://huedin.net/foto/cristian-topescu-si-helmuth-duckadam-la-meciul-amical-dintre-vladeasa-huedin-si-steaua-bucuresti-1987.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-la-meciul-amical-dintre.webp</image:loc>
     </image:image>
   </url>
 </urlset>

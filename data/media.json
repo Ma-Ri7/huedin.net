@@ -4404,23 +4404,6 @@
     "height": 919
    }
   },
-  "p261": {
-   "source": "assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-1987-1987.webp",
-   "sourceSize": {
-    "width": 1536,
-    "height": 1024
-   },
-   "thumb": {
-    "path": "assets/img/thumbs/p261.webp",
-    "width": 600,
-    "height": 400
-   },
-   "preview": {
-    "path": "assets/img/previews/p261.webp",
-    "width": 1400,
-    "height": 933
-   }
-  },
   "p262": {
    "source": "assets/img/portfolio/soldati-ai-um-01049-huedin-grupul-nr-5-cercetare-diversiune-.webp",
    "sourceSize": {
@@ -4504,6 +4487,23 @@
     "path": "assets/img/previews/p266.webp",
     "width": 1400,
     "height": 788
+   }
+  },
+  "p267": {
+   "source": "assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-la-meciul-amical-dintre.webp",
+   "sourceSize": {
+    "width": 1440,
+    "height": 996
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p267.webp",
+    "width": 600,
+    "height": 415
+   },
+   "preview": {
+    "path": "assets/img/previews/p267.webp",
+    "width": 1400,
+    "height": 968
    }
   }
  }
