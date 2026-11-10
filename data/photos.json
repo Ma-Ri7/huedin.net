@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 265,
+ "count": 266,
  "legacyCount": 257,
- "manualCount": 8,
+ "manualCount": 9,
  "photos": [
   {
    "id": "p001",
@@ -9317,6 +9317,45 @@
     "Helmuth Duckadam",
     "Vlădeasa Huedin",
     "Steaua București"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p268",
+   "legacyIndex": 100008,
+   "slug": "complexul-comercial-vladeasa-1973",
+   "title": "Complexul Comercial Vlădeasa - 1973",
+   "alt": "Complexul Comercial Vlădeasa - 1973",
+   "image": "assets/img/portfolio/complexul-comercial-vladeasa-1973-1973.webp",
+   "originalImage": "assets/img/portfolio/complexul-comercial-vladeasa-1973-1973.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1973,
+   "yearStart": 1973,
+   "yearEnd": 1973,
+   "yearApprox": false,
+   "yearLabel": "1973",
+   "yearText": "1973",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.864723,
+   "longitude": 23.026021,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "exact",
+   "description": "Complexul Comercial Vlădeasa - 1973",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "Complexul Comercial Vlădeasa",
+    "1973",
+    "Huedin"
    ],
    "origin": "manual"
   }

@@ -2140,4 +2140,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-la-meciul-amical-dintre.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/complexul-comercial-vladeasa-1973.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/complexul-comercial-vladeasa-1973-1973.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>

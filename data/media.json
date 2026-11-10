@@ -4505,6 +4505,23 @@
     "width": 1400,
     "height": 968
    }
+  },
+  "p268": {
+   "source": "assets/img/portfolio/complexul-comercial-vladeasa-1973-1973.webp",
+   "sourceSize": {
+    "width": 700,
+    "height": 700
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p268.webp",
+    "width": 600,
+    "height": 600
+   },
+   "preview": {
+    "path": "assets/img/previews/p268.webp",
+    "width": 700,
+    "height": 700
+   }
   }
  }
 }
