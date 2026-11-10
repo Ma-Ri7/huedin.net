@@ -4489,23 +4489,6 @@
     "height": 788
    }
   },
-  "p267": {
-   "source": "assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-la-meciul-amical-dintre.webp",
-   "sourceSize": {
-    "width": 1440,
-    "height": 996
-   },
-   "thumb": {
-    "path": "assets/img/thumbs/p267.webp",
-    "width": 600,
-    "height": 415
-   },
-   "preview": {
-    "path": "assets/img/previews/p267.webp",
-    "width": 1400,
-    "height": 968
-   }
-  },
   "p268": {
    "source": "assets/img/portfolio/complexul-comercial-vladeasa-1973-1973.webp",
    "sourceSize": {
@@ -4521,6 +4504,23 @@
     "path": "assets/img/previews/p268.webp",
     "width": 700,
     "height": 700
+   }
+  },
+  "p269": {
+   "source": "assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-pe-stadionul-din-huedin.webp",
+   "sourceSize": {
+    "width": 1400,
+    "height": 968
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p269.webp",
+    "width": 600,
+    "height": 415
+   },
+   "preview": {
+    "path": "assets/img/previews/p269.webp",
+    "width": 1400,
+    "height": 968
    }
   }
  }
