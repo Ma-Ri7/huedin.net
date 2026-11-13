@@ -4539,6 +4539,23 @@
     "width": 1400,
     "height": 1069
    }
+  },
+  "p271": {
+   "source": "assets/img/portfolio/huedin-1984-1984.webp",
+   "sourceSize": {
+    "width": 1400,
+    "height": 1400
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p271.webp",
+    "width": 600,
+    "height": 600
+   },
+   "preview": {
+    "path": "assets/img/previews/p271.webp",
+    "width": 1400,
+    "height": 1400
+   }
   }
  }
 }
