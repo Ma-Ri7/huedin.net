@@ -2148,4 +2148,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/cristian-topescu-si-helmuth-duckadam-pe-stadionul-din-huedin.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/pompieri-militari-1989.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/pompieri-militari-1989-1989.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>

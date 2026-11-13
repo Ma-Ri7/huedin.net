@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 266,
+ "count": 267,
  "legacyCount": 257,
- "manualCount": 9,
+ "manualCount": 10,
  "photos": [
   {
    "id": "p001",
@@ -9357,6 +9357,46 @@
     "fotbal",
     "Huedin",
     "Vlădeasa Huedin"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p270",
+   "legacyIndex": 100009,
+   "slug": "pompieri-militari-1989",
+   "title": "Pompieri militari -1989",
+   "alt": "Pompieri militari -1989",
+   "image": "assets/img/portfolio/pompieri-militari-1989-1989.webp",
+   "originalImage": "assets/img/portfolio/pompieri-militari-1989-1989.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1989,
+   "yearStart": 1989,
+   "yearEnd": 1989,
+   "yearApprox": false,
+   "yearLabel": "1989",
+   "yearText": "1989",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.867818,
+   "longitude": 23.026159,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "exact",
+   "description": "Deși o formațiune de pompieri exista deja în localitate, momentul constituirii oficiale a Secției de Pompieri Huedin este 30 decembrie 1949, prin Decretul Marii Adunări Naționale nr. 455. \n\nUnul dintre cele mai dramatice momente din istoria timpurie a unității s-a petrecut la 18 aprilie 1956, când un incendiu de proporții a cuprins 57 de gospodării din Huedin. Favorizat de secetă și vânt, focul amenința să se extindă asupra întregii localități. Garda de intervenție din Huedin, condusă de plutonierul Dănilă Toader, a primit sprijinul pompierilor militari din Cluj și Oradea.",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "pompieri",
+    "pompieri militari",
+    "Huedin",
+    "1989"
    ],
    "origin": "manual"
   }

@@ -4522,6 +4522,23 @@
     "width": 1400,
     "height": 968
    }
+  },
+  "p270": {
+   "source": "assets/img/portfolio/pompieri-militari-1989-1989.webp",
+   "sourceSize": {
+    "width": 1435,
+    "height": 1096
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p270.webp",
+    "width": 600,
+    "height": 458
+   },
+   "preview": {
+    "path": "assets/img/previews/p270.webp",
+    "width": 1400,
+    "height": 1069
+   }
   }
  }
 }
