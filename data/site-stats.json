@@ -1,7 +1,7 @@
 {
  "generatedFrom": "data/photos.json",
- "photos": 268,
- "photoPages": 268,
+ "photos": 269,
+ "photoPages": 269,
  "pages": [
   "index.html",
   "arhiva.html",
@@ -13,19 +13,19 @@
   "1800-1900": 12,
   "1900-1930": 63,
   "1930-1960": 56,
-  "1960-1990": 137
+  "1960-1990": 138
  },
- "exactYear": 185,
+ "exactYear": 186,
  "approximateOrRange": 63,
  "eraOnly": 15,
  "unknownYear": 5,
- "withLocation": 194,
+ "withLocation": 195,
  "withoutLocation": 74,
- "withOwnCoordinates": 230,
- "withExactCoordinates": 76,
+ "withOwnCoordinates": 231,
+ "withExactCoordinates": 77,
  "withoutAnyCoordinates": 38,
  "locationsTotal": 9,
  "locationsWithCoordinates": 1,
- "withBlackAndWhiteOriginal": 260,
+ "withBlackAndWhiteOriginal": 261,
  "brokenLegacyReferences": 1
 }

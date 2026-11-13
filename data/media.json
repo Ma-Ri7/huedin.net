@@ -4556,6 +4556,23 @@
     "width": 1400,
     "height": 1400
    }
+  },
+  "p272": {
+   "source": "assets/img/portfolio/huedin-1984-zona-centrala-1984.webp",
+   "sourceSize": {
+    "width": 2800,
+    "height": 2800
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p272.webp",
+    "width": 600,
+    "height": 600
+   },
+   "preview": {
+    "path": "assets/img/previews/p272.webp",
+    "width": 1400,
+    "height": 1400
+   }
   }
  }
 }

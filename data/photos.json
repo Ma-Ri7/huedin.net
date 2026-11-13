@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 268,
+ "count": 269,
  "legacyCount": 257,
- "manualCount": 11,
+ "manualCount": 12,
  "photos": [
   {
    "id": "p001",
@@ -9435,6 +9435,46 @@
    "tags": [
     "Huedin",
     "Centru Comercial Vlădeasa",
+    "1984"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p272",
+   "legacyIndex": 100011,
+   "slug": "huedin-1984-zona-centrala",
+   "title": "Huedin - 1984 ( zona centrală )",
+   "alt": "Huedin - 1984 ( zona centrală )",
+   "image": "assets/img/portfolio/huedin-1984-zona-centrala-1984.webp",
+   "originalImage": "assets/img/portfolio/huedin-1984-zona-centrala-1984.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1984,
+   "yearStart": 1984,
+   "yearEnd": 1984,
+   "yearApprox": false,
+   "yearLabel": "1984",
+   "yearText": "1984",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.864486,
+   "longitude": 23.027214,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "exact",
+   "description": "Huedin - 1984 ( zona centrală )",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "centru",
+    "zona centrală",
+    "Huedin",
     "1984"
    ],
    "origin": "manual"
