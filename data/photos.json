@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 269,
+ "count": 270,
  "legacyCount": 257,
- "manualCount": 12,
+ "manualCount": 13,
  "photos": [
   {
    "id": "p001",
@@ -9477,6 +9477,41 @@
     "Huedin",
     "1984"
    ],
+   "origin": "manual"
+  },
+  {
+   "id": "p273",
+   "legacyIndex": 100012,
+   "slug": "huedin-anii-80-13",
+   "title": "Huedin  - anii '80",
+   "alt": "Huedin  - anii '80 ( str. Republicii nr. 39 )",
+   "image": "assets/img/portfolio/huedin-anii-80-anii-80-2.webp",
+   "originalImage": "assets/img/portfolio/huedin-anii-80-anii-80-2.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": null,
+   "yearStart": 1980,
+   "yearEnd": 1989,
+   "yearApprox": false,
+   "yearLabel": "anii '80",
+   "yearText": "anii '80",
+   "precision": "decade",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": "anii '80",
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.863618,
+   "longitude": 23.026142,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Huedin  - anii '80 ( str. Republicii nr. 39 )",
+   "source": "",
+   "credits": "",
+   "tags": [],
    "origin": "manual"
   }
  ]
