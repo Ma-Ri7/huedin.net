@@ -4590,6 +4590,23 @@
     "width": 1400,
     "height": 919
    }
+  },
+  "p274": {
+   "source": "assets/img/portfolio/huedin-perioada-interbelica-interbelic.webp",
+   "sourceSize": {
+    "width": 3782,
+    "height": 3172
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p274.webp",
+    "width": 600,
+    "height": 503
+   },
+   "preview": {
+    "path": "assets/img/previews/p274.webp",
+    "width": 1400,
+    "height": 1174
+   }
   }
  }
 }

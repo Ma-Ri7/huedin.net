@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 270,
+ "count": 271,
  "legacyCount": 257,
- "manualCount": 13,
+ "manualCount": 14,
  "photos": [
   {
    "id": "p001",
@@ -9512,6 +9512,46 @@
    "source": "",
    "credits": "",
    "tags": [],
+   "origin": "manual"
+  },
+  {
+   "id": "p274",
+   "legacyIndex": 100013,
+   "slug": "huedin-perioada-interbelica",
+   "title": "Huedin - perioada interbelică",
+   "alt": "Huedin - perioada interbelică",
+   "image": "assets/img/portfolio/huedin-perioada-interbelica-interbelic.webp",
+   "originalImage": "assets/img/portfolio/huedin-perioada-interbelica-interbelic.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": null,
+   "yearStart": null,
+   "yearEnd": null,
+   "yearApprox": false,
+   "yearLabel": "perioada interbelică",
+   "yearText": "interbelic",
+   "precision": "era",
+   "eraId": "interbelic",
+   "eraLabel": "perioada interbelică",
+   "periodId": "1900-1930",
+   "periodLabel": "perioada interbelică",
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.864503,
+   "longitude": 23.025713,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Huedin - perioada interbelică",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "centru",
+    "interbelic",
+    "Huedin",
+    "terasa"
+   ],
    "origin": "manual"
   }
  ]

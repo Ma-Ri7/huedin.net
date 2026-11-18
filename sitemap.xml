@@ -2180,4 +2180,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/huedin-anii-80-anii-80-2.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/huedin-perioada-interbelica.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/huedin-perioada-interbelica-interbelic.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>
