@@ -111,7 +111,6 @@
    "certainty": "locality",
    "description": "Orașul Huedin. Coordonatele indică localitatea, nu punctul exact al fotografiei.",
    "photoIds": [
-    "p001",
     "p003",
     "p004",
     "p005",
@@ -292,7 +291,8 @@
     "p271",
     "p272",
     "p273",
-    "p274"
+    "p274",
+    "p275"
    ]
   }
  ]

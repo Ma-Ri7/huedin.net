@@ -4353,23 +4353,6 @@
     "height": 887
    }
   },
-  "p001": {
-   "source": "assets/img/portfolio/n8EPf7R.jpeg",
-   "sourceSize": {
-    "width": 2132,
-    "height": 1363
-   },
-   "thumb": {
-    "path": "assets/img/thumbs/p001.webp",
-    "width": 600,
-    "height": 384
-   },
-   "preview": {
-    "path": "assets/img/previews/p001.webp",
-    "width": 1400,
-    "height": 895
-   }
-  },
   "p258": {
    "source": "assets/img/portfolio/decembrie-89-1989.webp",
    "sourceSize": {
@@ -4606,6 +4589,23 @@
     "path": "assets/img/previews/p274.webp",
     "width": 1400,
     "height": 1174
+   }
+  },
+  "p275": {
+   "source": "assets/img/portfolio/biserica-reformata-1908-biserica-reformata-1908.webp",
+   "sourceSize": {
+    "width": 2794,
+    "height": 1786
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p275.webp",
+    "width": 600,
+    "height": 384
+   },
+   "preview": {
+    "path": "assets/img/previews/p275.webp",
+    "width": 1400,
+    "height": 895
    }
   }
  }

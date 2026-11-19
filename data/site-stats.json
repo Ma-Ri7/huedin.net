@@ -22,10 +22,10 @@
  "withLocation": 197,
  "withoutLocation": 74,
  "withOwnCoordinates": 233,
- "withExactCoordinates": 77,
+ "withExactCoordinates": 78,
  "withoutAnyCoordinates": 38,
  "locationsTotal": 9,
  "locationsWithCoordinates": 1,
- "withBlackAndWhiteOriginal": 263,
+ "withBlackAndWhiteOriginal": 264,
  "brokenLegacyReferences": 1
 }

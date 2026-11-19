@@ -21,14 +21,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://huedin.net/foto/biserica-reformata.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.7</priority>
-    <image:image>
-      <image:loc>https://huedin.net/assets/img/portfolio/n8EPf7R.jpeg</image:loc>
-    </image:image>
-  </url>
-  <url>
     <loc>https://huedin.net/foto/strada-horea.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
@@ -2186,6 +2178,14 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://huedin.net/assets/img/portfolio/huedin-perioada-interbelica-interbelic.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://huedin.net/foto/biserica-reformata-1908.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/biserica-reformata-1908-biserica-reformata-1908.webp</image:loc>
     </image:image>
   </url>
 </urlset>
