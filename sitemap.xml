@@ -2188,4 +2188,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/biserica-reformata-1908-biserica-reformata-1908.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/huedin-1982-centrul-comercial-vladeasa.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/huedin-1982-centrul-comercial-vladeasa-1982.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>

@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 271,
+ "count": 272,
  "legacyCount": 256,
- "manualCount": 15,
+ "manualCount": 16,
  "photos": [
   {
    "id": "p002",
@@ -9555,6 +9555,45 @@
     "biserica reformată",
     "Huedin",
     "1908"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p276",
+   "legacyIndex": 100015,
+   "slug": "huedin-1982-centrul-comercial-vladeasa",
+   "title": "Huedin - 1982 ( Centrul Comercial Vlădeasa )",
+   "alt": "Huedin - 1982 ( Centrul Comercial Vlădeasa )",
+   "image": "assets/img/portfolio/huedin-1982-centrul-comercial-vladeasa-1982.webp",
+   "originalImage": "assets/img/portfolio/huedin-1982-centrul-comercial-vladeasa-1982.jpg",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1982,
+   "yearStart": 1982,
+   "yearEnd": 1982,
+   "yearApprox": false,
+   "yearLabel": "1982",
+   "yearText": "1982",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1960-1990",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.864701,
+   "longitude": 23.025943,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Huedin - 1982 ( Centrul Comercial Vlădeasa )",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "Centrul Comercial Vlădeasa",
+    "Huedin",
+    "1982"
    ],
    "origin": "manual"
   }

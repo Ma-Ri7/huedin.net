@@ -4607,6 +4607,23 @@
     "width": 1400,
     "height": 895
    }
+  },
+  "p276": {
+   "source": "assets/img/portfolio/huedin-1982-centrul-comercial-vladeasa-1982.webp",
+   "sourceSize": {
+    "width": 2800,
+    "height": 2800
+   },
+   "thumb": {
+    "path": "assets/img/thumbs/p276.webp",
+    "width": 600,
+    "height": 600
+   },
+   "preview": {
+    "path": "assets/img/previews/p276.webp",
+    "width": 1400,
+    "height": 1400
+   }
   }
  }
 }
