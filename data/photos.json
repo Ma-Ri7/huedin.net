@@ -1,8 +1,8 @@
 {
  "generatedFrom": "backup/legacy-index.html",
- "count": 272,
+ "count": 273,
  "legacyCount": 256,
- "manualCount": 16,
+ "manualCount": 17,
  "photos": [
   {
    "id": "p002",
@@ -9594,6 +9594,46 @@
     "Centrul Comercial Vlădeasa",
     "Huedin",
     "1982"
+   ],
+   "origin": "manual"
+  },
+  {
+   "id": "p277",
+   "legacyIndex": 100016,
+   "slug": "imagine-din-tren-1941",
+   "title": "Imagine din tren - 1941",
+   "alt": "Imagine din tren - 1941",
+   "image": "assets/img/portfolio/imagine-din-tren-1941-1941.webp",
+   "originalImage": "assets/img/portfolio/imagine-din-tren-1941-1941.png",
+   "lightboxImage": null,
+   "lightboxBroken": false,
+   "year": 1941,
+   "yearStart": 1941,
+   "yearEnd": 1941,
+   "yearApprox": false,
+   "yearLabel": "1941",
+   "yearText": "1941",
+   "precision": "year",
+   "eraId": null,
+   "eraLabel": null,
+   "periodId": "1930-1960",
+   "periodLabel": null,
+   "legacyFilter": null,
+   "locationId": "huedin",
+   "locationName": "Huedin",
+   "locationNote": null,
+   "latitude": 46.866919,
+   "longitude": 23.032229,
+   "coordinateSource": "Poziționare manuală pe harta OpenStreetMap",
+   "coordinateCertainty": "approximate",
+   "description": "Imagine din tren - 1941",
+   "source": "",
+   "credits": "",
+   "tags": [
+    "tren",
+    "gara",
+    "Huedin",
+    "1941"
    ],
    "origin": "manual"
   }

@@ -2196,4 +2196,12 @@
       <image:loc>https://huedin.net/assets/img/portfolio/huedin-1982-centrul-comercial-vladeasa-1982.webp</image:loc>
     </image:image>
   </url>
+  <url>
+    <loc>https://huedin.net/foto/imagine-din-tren-1941.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://huedin.net/assets/img/portfolio/imagine-din-tren-1941-1941.webp</image:loc>
+    </image:image>
+  </url>
 </urlset>
